@@ -1,19 +1,9 @@
-"""Windows entry point for the MAID secretary."""
-from pathlib import Path
 import subprocess
 import sys
-
-
-def main():
-    script = Path(__file__).resolve().parent / "vendor" / "awo" / "scripts" / "maid.py"
-    if not script.is_file():
-        print("Run git submodule update --init from the maid checkout.", file=sys.stderr)
-        return 2
-    if sys.argv[1:2] == ["request"]:
-        import secretary_request
-        return secretary_request.main(sys.argv[2:])
-    return subprocess.call([sys.executable, "-B", str(script), *sys.argv[1:]])
-
+from pathlib import Path
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    entry = Path(__file__).resolve().parent / "vendor/awo/apps/maid/maid.py"
+    if not entry.is_file():
+        sys.exit("Backend missing: use the Windows release ZIP or git submodule update --init.")
+    sys.exit(subprocess.call([sys.executable, "-B", str(entry), *sys.argv[1:]]))
