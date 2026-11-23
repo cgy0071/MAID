@@ -9,6 +9,9 @@ def main():
     if not script.is_file():
         print("Run git submodule update --init from the maid checkout.", file=sys.stderr)
         return 2
+    if sys.argv[1:2] == ["request"]:
+        import secretary_request
+        return secretary_request.main(sys.argv[2:])
     return subprocess.call([sys.executable, "-B", str(script), *sys.argv[1:]])
 
 
