@@ -1,3 +1,0 @@
-[submodule "vendor/awo"]
-	path = vendor/awo
-	url = https://github.com/cgy0071/agent-workflow-orchestrator.git

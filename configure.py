@@ -4,7 +4,9 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent / "vendor/awo/scripts"))
+from backend import locate
+
+sys.path.insert(0, str(locate() / "scripts"))
 from harness_probe import binary
 from project_entry import validate_spec
 

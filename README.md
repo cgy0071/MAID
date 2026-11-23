@@ -4,7 +4,27 @@
 
 你可以只和一名秘书对话，也可以在 Herdr 或习惯的终端直接与执行者交流。秘书默认用 **agy**，可以换成 Claude 等本地命令；本预览版的一次性任务由 **Codex 执行和审查**。
 
-**[下载 Windows 预览版 ZIP](https://github.com/cgy0071/MAID/releases/download/v0.1.0-preview.3/MAID-Windows-0.1.0-preview.3.zip)** · [发行说明和 SHA-256](https://github.com/cgy0071/MAID/releases/tag/v0.1.0-preview.3)。完整解压，在含有 `maid.py` 的目录打开 PowerShell。需要 Python 3.10+；运行项目任务还需要 Git 和已登录的 Codex CLI。源码用户请用 `git clone --recurse-submodules https://github.com/cgy0071/MAID.git`。
+**MAID 是秘书入口，[AWO](https://github.com/cgy0071/agent-workflow-orchestrator) 是工作流引擎。** 在 MAID 选秘书、选项目、确认草稿；由 AWO 派工、保存任务状态和独立验收证据。两个项目分别安装和更新。
+
+## Windows 安装与更新
+
+在同一个父目录打开 PowerShell。需要 Git 和 Python 3.10+；执行项目任务还需要已登录的 Codex CLI。
+
+~~~powershell
+git clone https://github.com/cgy0071/MAID.git
+git clone --branch maid-v0.1.0-preview.2 https://github.com/cgy0071/agent-workflow-orchestrator.git
+cd MAID
+python maid.py doctor
+~~~
+
+已有兼容的 AWO？跳过第二次克隆，在当前 PowerShell 指定其位置：
+
+~~~powershell
+$env:MAID_AWO_ROOT = 'D:\Tools\agent-workflow-orchestrator'
+python maid.py doctor
+~~~
+
+**只更新 MAID**：在 MAID 目录运行 `git pull --ff-only`。**只更新 AWO**：在 AWO 目录运行 `git fetch --tags`，用 `git switch --detach 标签名` 切到兼容版本，再回 MAID 运行 `python maid.py doctor` 检查入口。当前验证过的 AWO 标签是 `maid-v0.1.0-preview.2`；不保证任意 main 都含秘书接口。旧 ZIP 仅作历史预览保留。
 
 ## 1. 选择秘书
 
@@ -12,7 +32,7 @@
 
 ~~~powershell
 $Secretary = 'agy'                                    # 默认：Antigravity CLI
-$Secretary = '.\vendor\awo\examples\maid-secretary-claude.json' # Claude CLI，无需 agy
+$Secretary = '.\examples\secretary-claude.json' # Claude CLI，无需 agy
 ~~~
 
 只想交谈？不需要项目配置：
@@ -50,4 +70,4 @@ python maid.py --thread $Thread start --confirm-execute
 python maid.py --thread $Thread status
 ~~~
 
-重开终端后，回到解压目录，把 `$Thread` 设回原路径，只运行 `status` 即可查询验收结果及证据编号，不会重新派工。
+重开终端后，回到 MAID 目录，把 `$Thread` 设回原路径，只运行 `status` 即可查询验收结果及证据编号，不会重新派工。

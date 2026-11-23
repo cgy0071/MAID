@@ -3,7 +3,10 @@ import sys
 from pathlib import Path
 
 if __name__ == "__main__":
-    entry = Path(__file__).resolve().parent / "vendor/awo/apps/maid/maid.py"
-    if not entry.is_file():
-        sys.exit("Backend missing: use the Windows release ZIP or git submodule update --init.")
+    from backend import locate
+    root = locate()
+    entry = root / "apps/maid/maid.py"
+    if sys.argv[1:] == ["doctor"]:
+        print("AWO:", root, flush=True)
+        sys.exit(subprocess.call([sys.executable, "-B", str(entry), "request", "--help"]))
     sys.exit(subprocess.call([sys.executable, "-B", str(entry), *sys.argv[1:]]))
