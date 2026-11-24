@@ -7,9 +7,21 @@
 - **秘书（MAID）**：默认使用 **agy**（也可换成 Claude 等本地工具），负责和你沟通、选项目、写草稿、查进度。
 - **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。当前版本的一次性任务由 **Codex** 执行和审查。
 
-> 两个项目各自独立安装和更新：MAID 是你的“前台秘书”，AWO 是后台的“调度引擎”。
+> MAID 和 AWO 是两个独立项目，各自发布和更新。下图展示一种联用方式：你在 MAID 里和秘书商量要做什么，确认后由 AWO 执行和验收。也可以不经过 MAID，直接使用 AWO。
 
 ## 30 秒看懂完整流程
+
+~~~mermaid
+flowchart TD
+    O["你（Owner）"] <-->|讨论需求、选择项目| S["MAID 秘书"]
+    S --> D["查看草稿：目标、允许改的文件、验收方式"]
+    D -->|需要修改| S
+    D -->|你确认派工| A["AWO 执行任务并独立审核"]
+    A -->|查询状态| R["查看进度、审核结论；通过后可查证据编号"]
+    R -->|决定下一步| O
+~~~
+
+**草稿是交给你看的，确认才会派工。** 想知道谁执行、谁验收，可接着看 [AWO 的工作流程](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works)。
 
 1. **选秘书**：决定用 `agy` 还是 Claude 和你对话。
 2. **绑项目**：用 `configure.py` 指定要改哪个 Git 仓库、允许改哪些文件、用什么脚本验收。
@@ -23,7 +35,7 @@
 
 先确认本机已安装 **Git** 和 **Python 3.10+**；如果要实际派工执行代码任务，还需要已登录的 **Codex CLI**。
 
-在同一个父目录下打开 PowerShell，分别克隆两个仓库并做一次自检：
+要试用上图的联用流程，可在同一个父目录下打开 PowerShell，克隆下面这组已验证的版本并做一次自检：
 
 ~~~powershell
 git clone --branch v0.2.1 https://github.com/cgy0071/MAID.git
@@ -42,7 +54,7 @@ python maid.py doctor
 
 **几个小提醒（最容易踩坑的地方）：**
 - **默认查找位置**：`backend.py` 默认去 `MAID` 同级目录找 `agent-workflow-orchestrator`。一旦设置了 `$env:MAID_AWO_ROOT`，MAID 就只认你指定的路径，不会再自动回退到同级目录（新开 PowerShell 窗口需要重新设置）。
-- **版本必须匹配**：有公开入口 `scripts/awo_app.py` 的 AWO 必须通过 `capabilities` 检查：协议为 1，且支持 `maid` 和 `profile`。检查失败请核对版本；MAID 不会绕过检查改走旧接口。只有入口不存在时才走 AWO `v1.0.0` 的旧布局；旧版不支持普通 request 的知识授权路径。
+- **联用时检查接口兼容性**：有公开入口 `scripts/awo_app.py` 的 AWO 必须通过 `capabilities` 检查：协议为 1，且支持 `maid` 和 `profile`。检查失败请核对版本；MAID 不会绕过检查改走旧接口。只有入口不存在时才走 AWO `v1.0.0` 的旧布局；旧版不支持普通 request 的知识授权路径。
 - **`doctor` 查什么**：它会打印实际找到的 AWO 路径并检查后端命令能否打开，但不会测试模型登录或真正跑任务。
 
 **日常更新：**
