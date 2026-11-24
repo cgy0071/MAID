@@ -18,6 +18,18 @@ The example below uses [AWO](https://github.com/cgy0071/agent-workflow-orchestra
 4. Use **start --confirm-execute** to authorize the example Codex worker.
 5. Use **status** to find the review and evidence ID. Give each new task its own directory.
 
+## Let your AI set this up
+
+Copy this prompt into your assistant (for example, Codex, Claude Code, agy or Cursor):
+
+```text
+Check the paths and versions of Git and Python (3.10+). List installed clients by path or version without starting a session. Report missing prerequisites instead of installing them.
+Use my chosen setup directory; ask me for it if missing. Clone only into new subdirectories and never overwrite existing files.
+Clone tag v0.2.1 from https://github.com/cgy0071/MAID.git. For doctor, use my compatible AWO checkout if provided (set MAID_AWO_ROOT for this session only). Otherwise clone v1.1.1 from https://github.com/cgy0071/agent-workflow-orchestrator.git into a sibling directory named agent-workflow-orchestrator.
+From MAID, use the checked interpreter to run python -B maid.py doctor. Record the detected backend path and exit code.
+Do not modify my projects, access or change accounts or keys, make paid model calls, or dispatch real work. Report the environment, checkout paths, check results and the exact next command for me to run. Do not run that next step.
+```
+
 ## Install and update on Windows
 
 Install Git and Python 3.10 or later. To execute the example coding task, also install Codex CLI and sign in. Open PowerShell in a common parent directory and clone this tested pair:

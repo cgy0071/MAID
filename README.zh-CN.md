@@ -22,6 +22,18 @@
 
 ---
 
+## 让 AI 帮你快速部署
+
+把下面整段复制给 Codex、Claude Code、agy 或 Cursor 等助手：
+
+```text
+先检查 Git、Python 3.10+ 的路径和版本，并列出已安装的客户端（只查路径或版本，不启动会话）。缺少必需工具时告诉我，不要自行安装。
+使用我指定的安装目录；如果没给目录，先问我。只在新的子目录中克隆，不覆盖现有文件。
+从 https://github.com/cgy0071/MAID.git 克隆 v0.2.1。为运行 doctor，优先使用我提供的兼容 AWO 路径（仅本次会话设置 MAID_AWO_ROOT）；否则从 https://github.com/cgy0071/agent-workflow-orchestrator.git 克隆 v1.1.1 到同级 agent-workflow-orchestrator 目录。
+进入 MAID，用已检查的 Python 运行 python -B maid.py doctor，记录识别的后端路径和退出码。
+不要修改我的项目、操作账号或密钥，也不要发起付费模型调用或真实派工。最后汇报环境、安装路径、自检结果和下一步可复制的命令；下一步只列出，不执行。
+```
+
 ## 安装与更新（Windows）
 
 先确认本机已安装 **Git** 和 **Python 3.10+**；如果要实际派工执行代码任务，还需要已登录的 **Codex CLI**。
