@@ -42,7 +42,7 @@ python maid.py doctor
 
 **几个小提醒（最容易踩坑的地方）：**
 - **默认查找位置**：`backend.py` 默认去 `MAID` 同级目录找 `agent-workflow-orchestrator`。一旦设置了 `$env:MAID_AWO_ROOT`，MAID 就只认你指定的路径，不会再自动回退到同级目录（新开 PowerShell 窗口需要重新设置）。
-- **版本必须匹配**：`MAID` 需要 AWO 根目录里包含 `apps/maid/maid.py`、`scripts/secretary_adapter.py` 和 `scripts/project_entry.py`。MAID 0.1.0 配套的 AWO 标签是 `v1.0.0`；`maid-v0.1.0-preview.2` 只供复现旧预览环境——**不要直接指向任意 `main` 或其他开发分支**，否则会报不兼容错误。
+- **版本必须匹配**：有公开入口 `scripts/awo_app.py` 的 AWO 必须通过 `capabilities` 检查：协议为 1，且支持 `maid` 和 `profile`。检查失败请核对版本；MAID 不会绕过检查改走旧接口。只有入口不存在时才走 AWO `v1.0.0` 的旧布局；这是上述固定标签的兼容方式。
 - **`doctor` 查什么**：它会打印实际找到的 AWO 路径并检查后端命令能否打开，但不会测试模型登录或真正跑任务。
 
 **日常更新：**
