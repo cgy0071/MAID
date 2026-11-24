@@ -175,3 +175,5 @@ python maid.py shared --index $Index --project research status --task T-A
 ## 项目知识读取（v0.2.0）
 
 配合 AWO v1.1.0，给 request 增加 --directory <目录清单.json> --project <项目键> --material <共享文档键>。草稿和任务准备均检查已发布版本与授权；撤权后再次请求将被拒绝。
+
+[秘书如何向 Owner 汇报](SECRETARY.md)
