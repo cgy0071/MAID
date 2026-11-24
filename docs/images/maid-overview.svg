@@ -1,20 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="title desc" lang="en"><title id="title">One secretary, several projects</title><desc id="desc">Choose a project, review the draft and authorize dispatch. Return it for changes or open the terminal at any time.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="510" viewBox="0 0 960 510" role="img" aria-labelledby="title desc" lang="en"><title id="title">One secretary, several projects</title><desc id="desc">Choose a project, review the draft and authorize dispatch. Return it for changes or open the terminal at any time.</desc>
 <style>
-.bg{fill:#ffffff;stroke:#d0d7de}.box{fill:#f6f8fa;stroke:#d0d7de}.t{fill:#1f2328}.m{fill:#59636e}
+.bg{fill:#ffffff;stroke:#d0d7de}.t{fill:#1f2328}.m{fill:#59636e}
 .ar{stroke:#59636e;fill:none;stroke-width:1.6}.ah{fill:#59636e}.dash{stroke-dasharray:5 4}
-.agent{fill:#ddf4ff;stroke:#54aeff}.tool{fill:#dafbe1;stroke:#4ac26b}.warn{fill:#fff8c5;stroke:#d4a72c}
-.bad{fill:#ffebe9;stroke:#ff8182}.chip{fill:#ffffff;stroke:#d0d7de}
+
+
 @media (prefers-color-scheme: dark){
-.bg{fill:#0d1117;stroke:#3d444d}.box{fill:#161b22;stroke:#3d444d}.t{fill:#f0f6fc}.m{fill:#9198a1}
-.ar{stroke:#9198a1}.ah{fill:#9198a1}.agent{fill:#0c2d6b;stroke:#1f6feb}.tool{fill:#0f2d1a;stroke:#2ea043}
-.warn{fill:#341a00;stroke:#9e6a03}.bad{fill:#3c0f13;stroke:#da3633}.chip{fill:#0d1117;stroke:#3d444d}}
+.bg{fill:#0d1117;stroke:#3d444d}.t{fill:#f0f6fc}.m{fill:#9198a1}
+.ar{stroke:#9198a1}.ah{fill:#9198a1}
+}
 text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif}
 .mono{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace}
+.entry{fill:#eef1f4;stroke:#7d8590}
+.agent{fill:#ddf4ff;stroke:#54aeff}
+.decision{fill:#fff8c5;stroke:#d4a72c}
+.engine{fill:#fce7f3;stroke:#b55286}
+@media (prefers-color-scheme: dark){
+.entry{fill:#20262e;stroke:#9aa4af}
+.agent{fill:#0c2d6b;stroke:#1f6feb}
+.decision{fill:#341a00;stroke:#9e6a03}
+.engine{fill:#412136;stroke:#d68aad}
+}
 </style><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
-<rect x=".5" y=".5" width="959" height="439" rx="12" class="bg"/>
+<rect x=".5" y=".5" width="959" height="509" rx="12" class="bg"/>
 <text x="32" y="42" font-size="25" class="t" text-anchor="start" font-weight="600">One secretary, several projects</text>
 <text x="32" y="68" font-size="15" class="m" text-anchor="start">Choose a project, review the draft and authorize dispatch. Return it for changes or open the terminal at any time.</text>
-<rect x="32" y="108" width="240" height="80" rx="9" class="chip"/>
+<rect x="32" y="108" width="240" height="80" rx="9" class="entry"/>
 <text x="48" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">01  Talk to your secretary</text>
 <text x="48" y="157" font-size="14" class="m" text-anchor="start">Choose project A, B or C.</text>
 <text x="48" y="175" font-size="14" class="m" text-anchor="start">Use agy, Claude or another CLI.</text>
@@ -22,7 +32,7 @@ text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Mi
 <text x="376" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">02  Draft the task</text>
 <text x="376" y="157" font-size="14" class="m" text-anchor="start">Set the goal and allowed files.</text>
 <text x="376" y="175" font-size="14" class="m" text-anchor="start">Agree on acceptance checks.</text>
-<rect x="688" y="108" width="240" height="80" rx="9" class="warn"/>
+<rect x="688" y="108" width="240" height="80" rx="9" class="decision"/>
 <text x="704" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">03  Review the draft</text>
 <text x="704" y="157" font-size="14" class="m" text-anchor="start">Approve the scope to dispatch.</text>
 <text x="704" y="175" font-size="14" class="m" text-anchor="start">Return it if changes are needed.</text>
@@ -30,7 +40,7 @@ text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Mi
 <path d="M600 148 H686" class="ar" marker-end="url(#ah)"/>
 <path d="M800 108 V88 H485 V106" class="ar dash" marker-end="url(#ah)"/>
 <text x="644" y="84" font-size="13" class="m" text-anchor="middle">Revise draft</text>
-<rect x="688" y="264" width="240" height="80" rx="9" class="tool"/>
+<rect x="688" y="264" width="240" height="80" rx="9" class="engine"/>
 <text x="704" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">04  Execute and review</text>
 <text x="704" y="313" font-size="14" class="m" text-anchor="start">Example engine: AWO</text>
 <text x="704" y="331" font-size="14" class="m" text-anchor="start">A reviewer checks the evidence.</text>
@@ -38,7 +48,7 @@ text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Mi
 <text x="376" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">05  Report back</text>
 <text x="376" y="313" font-size="14" class="m" text-anchor="start">See progress and the verdict.</text>
 <text x="376" y="331" font-size="14" class="m" text-anchor="start">Find the accepted evidence ID.</text>
-<rect x="32" y="264" width="240" height="80" rx="9" class="chip"/>
+<rect x="32" y="264" width="240" height="80" rx="9" class="entry"/>
 <text x="48" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">Open the terminal</text>
 <text x="48" y="313" font-size="14" class="m" text-anchor="start">Talk directly to the executor</text>
 <text x="48" y="331" font-size="14" class="m" text-anchor="start">at any point during the task.</text>
@@ -49,4 +59,16 @@ text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Mi
 <text x="312" y="222" font-size="13" class="m" text-anchor="start">Results back to you</text>
 <path d="M152 344 V380 H808 V346" class="ar dash" marker-end="url(#ah)"/>
 <text x="480" y="403" font-size="14" class="m" text-anchor="middle">Optional: speak directly to the executor in its terminal</text>
+<g id="legend">
+<path d="M32 425 H928" class="ar" opacity=".35"/>
+<text x="32" y="455" class="t" font-size="15" font-weight="600">Color key</text>
+<rect x="148" y="442" width="17" height="17" rx="4" class="entry"/>
+<text x="173" y="456" class="t" font-size="14">User access point</text>
+<rect x="343" y="442" width="17" height="17" rx="4" class="agent"/>
+<text x="368" y="456" class="t" font-size="14">AI role</text>
+<rect x="538" y="442" width="17" height="17" rx="4" class="decision"/>
+<text x="563" y="456" class="t" font-size="14">Owner decision</text>
+<rect x="733" y="442" width="17" height="17" rx="4" class="engine"/>
+<text x="758" y="456" class="t" font-size="14">Execution engine</text>
+</g>
 </svg>
