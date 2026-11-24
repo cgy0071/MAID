@@ -159,3 +159,15 @@ python maid.py runs --index $Index --project research --run analysis status
 ~~~
 
 切换到第二个项目时把项目名及任务名改为 `--project report --run revision`。同一命令可在关闭、重开终端后恢复查询。只诊断中断任务可用 `recover`；执行恢复需明确追加 `--confirm-execute`。这条路径从已核对的 spec 开始，不能对第 3 步通过 `request` 创建的旧任务补做 `prepare`。只有 AWO 1.0.0 时请继续使用上文的 `request`、`--thread ... start/status`。
+### 同一项目的多个任务共享执行者与额度
+
+已有 AWO 项目控制器时，在同一索引项目下增加 `scheduler`，例如 `"scheduler":{"state":"state/research","project_id":"实际项目 ID","token_file":"private/research.token"}`。这里的 `repository` 必须是控制器绑定的项目根。凭据文件放在版本库外；索引仅保存其位置。通过 `python maid.py shared --help` 查看入口：
+
+~~~powershell
+python maid.py shared --index $Index --project research command --file .\create-task.json
+python maid.py shared --index $Index --project research command --file .\enqueue.json
+python maid.py shared --index $Index --project research command --file .\claim.json
+python maid.py shared --index $Index --project research status --task T-A
+~~~
+
+命令文件使用已配置 AWO 控制器的 `task.create`、`scheduler.enqueue`、`scheduler.claim` 格式。成功领取后，使用返回的 assignment 和当前 epoch 执行 `dispatch --assignment ID --epoch N`。同一控制器里的任务争用同一份执行者、预算和写入范围；重开后按项目和任务 ID 查询。独立控制器之间没有全局额度仲裁。这条路径需要有 `awo_project.py schedule` 的 AWO。
