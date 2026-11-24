@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="440" viewBox="0 0 960 440" role="img" aria-labelledby="title desc" lang="zh-CN"><title id="title">一个秘书，多个项目</title><desc id="desc">和秘书选项目、看草稿，确认后派工。可退回草稿或直接打开终端。</desc>
+<style>
+.bg{fill:#ffffff;stroke:#d0d7de}.box{fill:#f6f8fa;stroke:#d0d7de}.t{fill:#1f2328}.m{fill:#59636e}
+.ar{stroke:#59636e;fill:none;stroke-width:1.6}.ah{fill:#59636e}.dash{stroke-dasharray:5 4}
+.agent{fill:#ddf4ff;stroke:#54aeff}.tool{fill:#dafbe1;stroke:#4ac26b}.warn{fill:#fff8c5;stroke:#d4a72c}
+.bad{fill:#ffebe9;stroke:#ff8182}.chip{fill:#ffffff;stroke:#d0d7de}
+@media (prefers-color-scheme: dark){
+.bg{fill:#0d1117;stroke:#3d444d}.box{fill:#161b22;stroke:#3d444d}.t{fill:#f0f6fc}.m{fill:#9198a1}
+.ar{stroke:#9198a1}.ah{fill:#9198a1}.agent{fill:#0c2d6b;stroke:#1f6feb}.tool{fill:#0f2d1a;stroke:#2ea043}
+.warn{fill:#341a00;stroke:#9e6a03}.bad{fill:#3c0f13;stroke:#da3633}.chip{fill:#0d1117;stroke:#3d444d}}
+text{font-family:-apple-system,"Segoe UI","Noto Sans","Helvetica Neue",Arial,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif}
+.mono{font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",Menlo,monospace}
+</style><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
+<rect x=".5" y=".5" width="959" height="439" rx="12" class="bg"/>
+<text x="32" y="42" font-size="25" class="t" text-anchor="start" font-weight="600">一个秘书，多个项目</text>
+<text x="32" y="68" font-size="15" class="m" text-anchor="start">和秘书选项目、看草稿，确认后派工。可退回草稿或直接打开终端。</text>
+<rect x="32" y="108" width="240" height="80" rx="9" class="chip"/>
+<text x="48" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">01  你与项目秘书</text>
+<text x="48" y="157" font-size="14" class="m" text-anchor="start">对话中选择项目 A、B 或 C</text>
+<text x="48" y="175" font-size="14" class="m" text-anchor="start">秘书可用 agy、Claude 等工具</text>
+<rect x="360" y="108" width="240" height="80" rx="9" class="agent"/>
+<text x="376" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">02  秘书起草任务单</text>
+<text x="376" y="157" font-size="14" class="m" text-anchor="start">写清目标、允许改动的范围</text>
+<text x="376" y="175" font-size="14" class="m" text-anchor="start">约定如何验收</text>
+<rect x="688" y="108" width="240" height="80" rx="9" class="warn"/>
+<text x="704" y="134" font-size="17" class="t" text-anchor="start" font-weight="600">03  你确认草稿</text>
+<text x="704" y="157" font-size="14" class="m" text-anchor="start">范围合适才派工</text>
+<text x="704" y="175" font-size="14" class="m" text-anchor="start">需要修改，就退回秘书</text>
+<path d="M272 148 H358" class="ar" marker-end="url(#ah)"/>
+<path d="M600 148 H686" class="ar" marker-end="url(#ah)"/>
+<path d="M800 108 V88 H485 V106" class="ar dash" marker-end="url(#ah)"/>
+<text x="644" y="84" font-size="13" class="m" text-anchor="middle">退回修改</text>
+<rect x="688" y="264" width="240" height="80" rx="9" class="tool"/>
+<text x="704" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">04  后台执行与独立审核</text>
+<text x="704" y="313" font-size="14" class="m" text-anchor="start">当前联用示例：AWO</text>
+<text x="704" y="331" font-size="14" class="m" text-anchor="start">执行者提交成果，审核者核验证据</text>
+<rect x="360" y="264" width="240" height="80" rx="9" class="agent"/>
+<text x="376" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">05  秘书向你汇报</text>
+<text x="376" y="313" font-size="14" class="m" text-anchor="start">查看进度和审核结论</text>
+<text x="376" y="331" font-size="14" class="m" text-anchor="start">通过后可查验收证据编号</text>
+<rect x="32" y="264" width="240" height="80" rx="9" class="chip"/>
+<text x="48" y="290" font-size="17" class="t" text-anchor="start" font-weight="600">随时打开终端</text>
+<text x="48" y="313" font-size="14" class="m" text-anchor="start">可直接查看执行窗口、交流细节</text>
+<text x="48" y="331" font-size="14" class="m" text-anchor="start">不必等秘书转述</text>
+<path d="M808 188 V262" class="ar" marker-end="url(#ah)"/>
+<text x="819" y="230" font-size="14" class="m" text-anchor="start">确认派工</text>
+<path d="M688 304 H602" class="ar" marker-end="url(#ah)"/>
+<path d="M480 264 V228 H152 V190" class="ar" marker-end="url(#ah)"/>
+<text x="312" y="222" font-size="13" class="m" text-anchor="start">结果回到你手中</text>
+<path d="M152 344 V380 H808 V346" class="ar dash" marker-end="url(#ah)"/>
+<text x="480" y="403" font-size="14" class="m" text-anchor="middle">可选路径：直接与执行窗口交流</text>
+</svg>

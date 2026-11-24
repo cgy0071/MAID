@@ -8,30 +8,7 @@
 
 ## 一项任务怎样从想法变成结果
 
-~~~mermaid
-flowchart TB
-    subgraph plan["① 商量任务 · 你和秘书"]
-        O["你"] <-->|提需求 · 问进度| S["MAID 项目秘书"]
-        S --> P["从多个项目中选定本次项目"]
-        P --> D["任务草稿：目标、可改范围、验收方法"]
-    end
-    D --> G{"② 你确认这份草稿吗？"}
-    G -->|还要改：说清哪里不合适| S
-    subgraph work["③ 后台执行 · 当前联用示例：AWO"]
-        E["按确认范围执行"] --> V["独立审核交付结果"]
-    end
-    G -->|确认派工| E
-    O -. 随时直连终端交流 .-> E
-    E -. 进度 .-> R["④ 秘书汇报：当前状态、审核结论、验收证据"]
-    V --> R
-    R -->|你决定下一步| O
-    classDef person fill:#eaf2ff,stroke:#365c91,color:#142e50
-    classDef gate fill:#fff3cf,stroke:#93690c,color:#533900,stroke-width:2px
-    classDef result fill:#e7f6ee,stroke:#377450,color:#16412b
-    class O,S person
-    class G gate
-    class R result
-~~~
+![多项目秘书：退回或确认草稿、执行与审核、回报证据和直连终端](docs/images/maid-overview.zh-CN.svg)
 
 **如何联用执行引擎？** 下文用 [AWO](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works) 演示派工和独立验收。两个项目各自发布和更新；使用这条路径时，给 MAID 配置兼容的 AWO 即可。直接使用 AWO 不需要安装 MAID。
 
