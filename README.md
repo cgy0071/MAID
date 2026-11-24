@@ -1,4 +1,4 @@
-# MAID
+# Multi-Agent Inter-harness Dispatch - Your Multi-Agent Project Secretary
 
 English | [Chinese](README.zh-CN.md)
 

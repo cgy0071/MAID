@@ -1,8 +1,6 @@
-# MAID · 秘书处
+# Multi-Agent Inter-harness Dispatch · 你的多智能体项目秘书
 
 [English](README.md) | 中文
-
-**Multi-Agent Inter-harness Dispatch** · 你的多智能体项目秘书
 
 你可以只和一名项目秘书对话，同时管理多个项目。告诉它这次要做什么、属于哪个项目，它会把需求整理成一张任务单：**目标是什么、哪些文件可以改、怎样才算完成**。范围不对，就让它改草稿；只有你确认后，任务才会派发。
 
