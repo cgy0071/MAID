@@ -2,26 +2,38 @@
 
 **Multi-Agent Inter-harness Dispatch** · 你的多智能体项目秘书
 
-你可以只和一名秘书对话，让它帮你整理需求、生成任务草稿并跟踪结果；也可以随时打开终端，直接和干活的 AI 交流。
+你可以只和一名项目秘书对话，同时管理多个项目。告诉它这次要做什么、属于哪个项目，它会把需求整理成一张任务单：**目标是什么、哪些文件可以改、怎样才算完成**。范围不对，就让它改草稿；只有你确认后，任务才会派发。
 
-- **秘书（MAID）**：默认使用 **agy**（也可换成 Claude 等本地工具），负责和你沟通、选项目、写草稿、查进度。
-- **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。当前版本的一次性任务由 **Codex** 执行和审查。
+秘书默认使用 **agy**，也可以换成 Claude 等本地工具。派工后，你可以继续问秘书进度、结果和验收依据，也可以随时打开终端，直接和执行者交流。
 
-> MAID 和 AWO 是两个独立项目，各自发布和更新。下图展示一种联用方式：你在 MAID 里和秘书商量要做什么，确认后由 AWO 执行和验收。也可以不经过 MAID，直接使用 AWO。
-
-## 30 秒看懂完整流程
+## 一项任务怎样从想法变成结果
 
 ~~~mermaid
-flowchart TD
-    O["你（Owner）"] <-->|讨论需求、选择项目| S["MAID 秘书"]
-    S --> D["查看草稿：目标、允许改的文件、验收方式"]
-    D -->|需要修改| S
-    D -->|你确认派工| A["AWO 执行任务并独立审核"]
-    A -->|查询状态| R["查看进度、审核结论；通过后可查证据编号"]
-    R -->|决定下一步| O
+flowchart TB
+    subgraph plan["① 商量任务 · 你和秘书"]
+        O["你"] <-->|提需求 · 问进度| S["MAID 项目秘书"]
+        S --> P["从多个项目中选定本次项目"]
+        P --> D["任务草稿：目标、可改范围、验收方法"]
+    end
+    D --> G{"② 你确认这份草稿吗？"}
+    G -->|还要改：说清哪里不合适| S
+    subgraph work["③ 后台执行 · 当前联用示例：AWO"]
+        E["按确认范围执行"] --> V["独立审核交付结果"]
+    end
+    G -->|确认派工| E
+    O -. 随时直连终端交流 .-> E
+    E -. 进度 .-> R["④ 秘书汇报：当前状态、审核结论、验收证据"]
+    V --> R
+    R -->|你决定下一步| O
+    classDef person fill:#eaf2ff,stroke:#365c91,color:#142e50
+    classDef gate fill:#fff3cf,stroke:#93690c,color:#533900,stroke-width:2px
+    classDef result fill:#e7f6ee,stroke:#377450,color:#16412b
+    class O,S person
+    class G gate
+    class R result
 ~~~
 
-**草稿是交给你看的，确认才会派工。** 想知道谁执行、谁验收，可接着看 [AWO 的工作流程](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works)。
+**如何联用执行引擎？** 下文用 [AWO](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works) 演示派工和独立验收。两个项目各自发布和更新；使用这条路径时，给 MAID 配置兼容的 AWO 即可。直接使用 AWO 不需要安装 MAID。
 
 1. **选秘书**：决定用 `agy` 还是 Claude 和你对话。
 2. **绑项目**：用 `configure.py` 指定要改哪个 Git 仓库、允许改哪些文件、用什么脚本验收。
