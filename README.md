@@ -4,7 +4,7 @@ English | [Chinese](README.zh-CN.md)
 
 **Multi-Agent Inter-harness Dispatch** is a project secretary for people managing several projects. Tell your secretary which project you mean and what you want to achieve. It drafts a task that spells out the goal, the files that may change and how the result will be checked. If the scope is wrong, ask for a revision. Only dispatch when you approve the draft.
 
-The default secretary is **agy**. You can also use Claude or another local command. After dispatch, ask for progress, results and evidence, or open the terminal and talk directly to the executor.
+The default secretary is **Antigravity CLI (agy)**. You can also use Claude or another local command. After dispatch, ask for progress, results and evidence, or open the terminal and talk directly to the executor.
 
 ## From a request to a reviewed result
 
@@ -12,7 +12,7 @@ The default secretary is **agy**. You can also use Claude or another local comma
 
 The example below uses [AWO](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works) for execution and independent review. The projects are released separately. For this workflow, configure a compatible AWO checkout. AWO can also run without MAID.
 
-1. Choose your secretary: agy or Claude.
+1. Choose your secretary: Antigravity CLI (agy) or Claude.
 2. Bind your Git project, allowed files and verification script with **configure.py**.
 3. Use **request** to see the draft before any work is dispatched.
 4. Use **start --confirm-execute** to authorize the example Codex worker.
@@ -20,7 +20,7 @@ The example below uses [AWO](https://github.com/cgy0071/agent-workflow-orchestra
 
 ## Let your AI set this up
 
-Copy this prompt into your assistant (for example, Codex, Claude Code, agy or Cursor):
+Copy this prompt into your assistant (for example, Codex, Claude Code, Antigravity CLI (agy) or Cursor):
 
 ```text
 Check the paths and versions of Git and Python (3.10+). List installed clients by path or version without starting a session. Report missing prerequisites instead of installing them.
@@ -71,7 +71,7 @@ For a conversation without a project task, start a thread. Type exit to leave:
 python maid.py --thread "$env:LOCALAPPDATA\MAID\chat-01" chat --secretary $Secretary
 ~~~
 
-With agy, use `python maid.py direct --thread "$env:LOCALAPPDATA\MAID\chat-01" --secretary agy` to reopen the conversation. The example Claude profile starts a separate conversation for each turn. To connect another CLI, copy examples/secretary-claude.json and set turn to a trusted command that reads the prompt from standard input and writes the reply to standard output.
+With Antigravity CLI (agy), use `python maid.py direct --thread "$env:LOCALAPPDATA\MAID\chat-01" --secretary agy` to reopen the conversation. The example Claude profile starts a separate conversation for each turn. To connect another CLI, copy examples/secretary-claude.json and set turn to a trusted command that reads the prompt from standard input and writes the reply to standard output.
 
 ## 2. Set the project and allowed files
 
@@ -119,7 +119,7 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 | What you see | What to do |
 | --- | --- |
 | Incompatible AWO: ... lacks ... | Check the reported path and MAID_AWO_ROOT. If the interface is missing, clone the compatible AWO v1.1.1 tag separately. |
-| Doctor works but request cannot find agy | Check that agy runs in this terminal. For Claude, select the example Claude profile and sign in to Claude CLI. |
+| Doctor works but request cannot find Antigravity CLI (agy) | Check that the `agy` command runs in this terminal. For Claude, select the example Claude profile and sign in to Claude CLI. |
 | Verification script missing or profile already exists | Use a script inside the project and a fresh task name for each new profile. |
 | Draft says dispatched: false | Review the scope before starting. If unsure whether an earlier task started, check status first. |
 | Results missing after switching projects | Run status with the original thread path from the MAID directory. Do not start the task again. |
