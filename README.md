@@ -5,7 +5,7 @@
 你可以只和一名秘书对话，让它帮你整理需求、生成任务草稿并跟踪结果；也可以随时打开终端，直接和干活的 AI 交流。
 
 - **秘书（MAID）**：默认使用 **agy**（也可换成 Claude 等本地工具），负责和你沟通、选项目、写草稿、查进度。
-- **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。目前预览版的一次性任务由 **Codex** 执行和审查。
+- **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。MAID 0.1.0 的一次性任务由 **Codex** 执行和审查。
 
 > 两个项目各自独立安装和更新：MAID 是你的“前台秘书”，AWO 是后台的“调度引擎”。
 
@@ -27,7 +27,7 @@
 
 ~~~powershell
 git clone https://github.com/cgy0071/MAID.git
-git clone --branch maid-v0.1.0-preview.2 https://github.com/cgy0071/agent-workflow-orchestrator.git
+git clone --branch v1.0.0 https://github.com/cgy0071/agent-workflow-orchestrator.git
 cd MAID
 python maid.py doctor
 ~~~
@@ -42,7 +42,7 @@ python maid.py doctor
 
 **几个小提醒（最容易踩坑的地方）：**
 - **默认查找位置**：`backend.py` 默认去 `MAID` 同级目录找 `agent-workflow-orchestrator`。一旦设置了 `$env:MAID_AWO_ROOT`，MAID 就只认你指定的路径，不会再自动回退到同级目录（新开 PowerShell 窗口需要重新设置）。
-- **版本必须匹配**：`MAID` 需要 AWO 根目录里包含 `apps/maid/maid.py`、`scripts/secretary_adapter.py` 和 `scripts/project_entry.py`。目前验证过兼容的标签是 `maid-v0.1.0-preview.2`——**不要直接指向任意 `main` 或其他开发分支**，否则会报不兼容错误。
+- **版本必须匹配**：`MAID` 需要 AWO 根目录里包含 `apps/maid/maid.py`、`scripts/secretary_adapter.py` 和 `scripts/project_entry.py`。MAID 0.1.0 配套的 AWO 标签是 `v1.0.0`；`maid-v0.1.0-preview.2` 只供复现旧预览环境——**不要直接指向任意 `main` 或其他开发分支**，否则会报不兼容错误。
 - **`doctor` 查什么**：它会打印实际找到的 AWO 路径并检查后端命令能否打开，但不会测试模型登录或真正跑任务。
 
 **日常更新：**
@@ -129,7 +129,7 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 
 | 遇到什么情况 | 怎么处理 |
 | --- | --- |
-| 报错 `Incompatible AWO: ... lacks ...` | 看清报错里打印的路径：如果是路径指错了，重新设置 `$env:MAID_AWO_ROOT`；如果该 AWO 分支确实缺少秘书接口，单独克隆 `maid-v0.1.0-preview.2` 标签即可，不用动你原来的 AWO 工作区。 |
+| 报错 `Incompatible AWO: ... lacks ...` | 看清报错里打印的路径：如果是路径指错了，重新设置 `$env:MAID_AWO_ROOT`；如果该 AWO 分支确实缺少秘书接口，单独克隆 AWO 的 `v1.0.0` 标签即可，不用动你原来的 AWO 工作区。 |
 | `doctor` 正常，但 `request` 找不到 `agy` | 确认当前终端里能直接运行 `agy`；如果改用 Claude，请取消 `$Secretary = '.\examples\secretary-claude.json'` 的注释，并确保 Claude CLI 已安装且登录。 |
 | `configure.py` 提示验证脚本不存在或 profile 已存在 | 检查 `--verify-script` 写的是不是项目里真实存在的脚本；已有配置不会被覆盖，开新任务请换一个任务名。 |
 | 草稿里显示 `dispatched: false` | 这是正常现象，说明还在审阅草稿阶段。确认范围无误后再执行 `start --confirm-execute`；不确定以前有没有派过工，先运行 `status` 查一下。 |
