@@ -6,11 +6,13 @@ import subprocess
 import sys
 
 
-def select():
+def select(required=None):
     default = Path(__file__).resolve().parent.parent / "agent-workflow-orchestrator"
     root = Path(os.environ.get("MAID_AWO_ROOT", default)).resolve()
     entry = root / "scripts/awo_app.py"
     if not os.path.lexists(entry):
+        if required:
+            raise SystemExit(f"Incompatible AWO: legacy layout does not advertise {required}.")
         for rel in ("apps/maid/maid.py", "scripts/secretary_adapter.py", "scripts/project_entry.py"):
             if not (root / rel).is_file():
                 raise SystemExit(f"Incompatible AWO: {root} lacks {rel}. See README or set MAID_AWO_ROOT.")
@@ -24,13 +26,15 @@ def select():
         caps = info.get("capabilities")
         if not isinstance(caps, list) or not all(isinstance(x, str) for x in caps) or not {"maid", "profile"}.issubset(caps):
             raise ValueError("expected maid and profile capabilities")
+        if required and required not in caps:
+            raise ValueError(f"backend does not advertise {required}")
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         raise SystemExit(f"Incompatible AWO: {entry} capabilities check failed: {exc}") from exc
     return root, entry
 
 
 def run(action, argv):
-    root, entry = select()
+    root, entry = select(None if action in ("maid", "profile") else action)
     if action == "maid" and argv == ["doctor"]:
         print("AWO:", root, "(public protocol 1)" if entry else "(legacy v1.0.0 layout)", flush=True)
         argv = ["request", "--help"]

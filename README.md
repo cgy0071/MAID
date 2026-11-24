@@ -134,3 +134,28 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 | `configure.py` 提示验证脚本不存在或 profile 已存在 | 检查 `--verify-script` 写的是不是项目里真实存在的脚本；已有配置不会被覆盖，开新任务请换一个任务名。 |
 | 草稿里显示 `dispatched: false` | 这是正常现象，说明还在审阅草稿阶段。确认范围无误后再执行 `start --confirm-execute`；不确定以前有没有派过工，先运行 `status` 查一下。 |
 | 切到别的项目后，查不到刚才的结果 | 回到 `MAID` 目录，用原任务对应的 `--thread` 路径查 `status`；千万不要为了查结果重新运行 `start`。 |
+
+## 用同一秘书管理多个项目：按项目和任务名查询
+
+`python maid.py runs --help` 可查看按名称选择任务的命令。把索引保存在自己管理的本地位置；重开 PowerShell 后使用同一份索引。索引只保存名字和路径，任务状态、验收证据和恢复判断均由 AWO 提供。
+
+例如在 `D:\Work\index.json` 中保存：
+
+~~~json
+{"projects":{
+  "research":{"repository":"research","runs":{"analysis":{"spec":"profiles/analysis.json","thread":"tasks/analysis"}}},
+  "report":{"repository":"report","runs":{"revision":{"spec":"profiles/revision.json","thread":"tasks/revision"}}}
+}}
+~~~
+
+索引中的相对路径从索引文件所在目录算起。先用上文的 `configure.py` 为每项任务分别创建 profile，再把其中的 `goal` 改为任务目标并核对范围。每个 spec 的仓库和任务目录必须与索引一致。新版 AWO 宣告支持以下操作时，可在同一终端执行：
+
+~~~powershell
+$Index = 'D:\Work\index.json'
+python maid.py runs --index $Index list
+python maid.py runs --index $Index --project research --run analysis prepare
+python maid.py runs --index $Index --project research --run analysis start --confirm-execute
+python maid.py runs --index $Index --project research --run analysis status
+~~~
+
+切换到第二个项目时把项目名及任务名改为 `--project report --run revision`。同一命令可在关闭、重开终端后恢复查询。只诊断中断任务可用 `recover`；执行恢复需明确追加 `--confirm-execute`。这条路径从已核对的 spec 开始，不能对第 3 步通过 `request` 创建的旧任务补做 `prepare`。只有 AWO 1.0.0 时请继续使用上文的 `request`、`--thread ... start/status`。
