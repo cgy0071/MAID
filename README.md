@@ -26,8 +26,8 @@
 在同一个父目录下打开 PowerShell，分别克隆两个仓库并做一次自检：
 
 ~~~powershell
-git clone --branch v0.2.0 https://github.com/cgy0071/MAID.git
-git clone --branch v1.1.0 https://github.com/cgy0071/agent-workflow-orchestrator.git
+git clone --branch v0.2.1 https://github.com/cgy0071/MAID.git
+git clone --branch v1.1.1 https://github.com/cgy0071/agent-workflow-orchestrator.git
 cd MAID
 python maid.py doctor
 ~~~
@@ -129,7 +129,7 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 
 | 遇到什么情况 | 怎么处理 |
 | --- | --- |
-| 报错 `Incompatible AWO: ... lacks ...` | 看清报错里打印的路径：如果是路径指错了，重新设置 `$env:MAID_AWO_ROOT`；如果该 AWO 分支确实缺少秘书接口，单独克隆 AWO 的 `v1.1.0` 标签即可，不用动你原来的 AWO 工作区。 |
+| 报错 `Incompatible AWO: ... lacks ...` | 看清报错里打印的路径：如果是路径指错了，重新设置 `$env:MAID_AWO_ROOT`；如果该 AWO 分支确实缺少秘书接口，单独克隆 AWO 的 `v1.1.1` 标签即可，不用动你原来的 AWO 工作区。 |
 | `doctor` 正常，但 `request` 找不到 `agy` | 确认当前终端里能直接运行 `agy`；如果改用 Claude，请取消 `$Secretary = '.\examples\secretary-claude.json'` 的注释，并确保 Claude CLI 已安装且登录。 |
 | `configure.py` 提示验证脚本不存在或 profile 已存在 | 检查 `--verify-script` 写的是不是项目里真实存在的脚本；已有配置不会被覆盖，开新任务请换一个任务名。 |
 | 草稿里显示 `dispatched: false` | 这是正常现象，说明还在审阅草稿阶段。确认范围无误后再执行 `start --confirm-execute`；不确定以前有没有派过工，先运行 `status` 查一下。 |
@@ -172,8 +172,8 @@ python maid.py shared --index $Index --project research status --task T-A
 
 命令文件使用已配置 AWO 控制器的 `task.create`、`scheduler.enqueue`、`scheduler.claim` 格式。成功领取后，使用返回的 assignment 和当前 epoch 执行 `dispatch --assignment ID --epoch N`。同一控制器里的任务争用同一份执行者、预算和写入范围；重开后按项目和任务 ID 查询。独立控制器之间没有全局额度仲裁。这条路径需要有 `awo_project.py schedule` 的 AWO。
 
-## 项目知识读取（v0.2.0）
+## 项目知识读取（v0.2.1）
 
-配合 AWO v1.1.0，给 request 增加 --directory <目录清单.json> --project <项目键> --material <共享文档键>。草稿和任务准备均检查已发布版本与授权；撤权后再次请求将被拒绝。
+配合 AWO v1.1.1，给 request 增加 --directory <目录清单.json> --project <项目键> --material <共享文档键>。草稿和任务准备均检查已发布版本与授权；撤权后再次请求将被拒绝。
 
 [秘书如何向 Owner 汇报](SECRETARY.md)
