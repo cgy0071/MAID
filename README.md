@@ -5,7 +5,7 @@
 你可以只和一名秘书对话，让它帮你整理需求、生成任务草稿并跟踪结果；也可以随时打开终端，直接和干活的 AI 交流。
 
 - **秘书（MAID）**：默认使用 **agy**（也可换成 Claude 等本地工具），负责和你沟通、选项目、写草稿、查进度。
-- **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。MAID 0.1.0 的一次性任务由 **Codex** 执行和审查。
+- **执行与验收（[AWO](https://github.com/cgy0071/agent-workflow-orchestrator)）**：负责派工、隔离运行、独立审查和保存验收证据。当前版本的一次性任务由 **Codex** 执行和审查。
 
 > 两个项目各自独立安装和更新：MAID 是你的“前台秘书”，AWO 是后台的“调度引擎”。
 
@@ -135,11 +135,13 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 | 草稿里显示 `dispatched: false` | 这是正常现象，说明还在审阅草稿阶段。确认范围无误后再执行 `start --confirm-execute`；不确定以前有没有派过工，先运行 `status` 查一下。 |
 | 切到别的项目后，查不到刚才的结果 | 回到 `MAID` 目录，用原任务对应的 `--thread` 路径查 `status`；千万不要为了查结果重新运行 `start`。 |
 
-## 用同一秘书管理多个项目：按项目和任务名查询
+## 进阶：用同一秘书管理多个项目
 
-`python maid.py runs --help` 可查看按名称选择任务的命令。把索引保存在自己管理的本地位置；重开 PowerShell 后使用同一份索引。索引只保存名字和路径，任务状态、验收证据和恢复判断均由 AWO 提供。
+如果你想用一个本地索引文件集中管理多个项目和任务，可以先运行 `python maid.py runs --help` 查看按名称操作任务的命令。
 
-例如在 `D:\Work\index.json` 中保存：
+索引文件保存在你自己选定的本地目录（重开 PowerShell 后继续用同一份即可）。它只记录项目名、任务名和对应路径，真正的任务状态、验收证据和恢复判断都由 AWO 维护。
+
+例如在 `D:\Work\index.json` 中写入：
 
 ~~~json
 {"projects":{
@@ -148,7 +150,9 @@ python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
 }}
 ~~~
 
-索引中的相对路径从索引文件所在目录算起。先用上文的 `configure.py` 为每项任务分别创建 profile，再把其中的 `goal` 改为任务目标并核对范围。每个 spec 的仓库和任务目录必须与索引一致。新版 AWO 宣告支持以下操作时，可在同一终端执行：
+- 索引里的相对路径以索引文件所在目录为基准；
+- 先用前文的 `configure.py` 为每项任务分别生成 profile，再按需修改其中的 `goal` 并核对允许修改的范围（确保仓库与任务目录和索引一致）；
+- 配合新版 AWO，可以在同一个终端里按项目名和任务名直接推进：
 
 ~~~powershell
 $Index = 'D:\Work\index.json'
@@ -158,10 +162,13 @@ python maid.py runs --index $Index --project research --run analysis start --con
 python maid.py runs --index $Index --project research --run analysis status
 ~~~
 
-切换到第二个项目时把项目名及任务名改为 `--project report --run revision`。同一命令可在关闭、重开终端后恢复查询。只诊断中断任务可用 `recover`；执行恢复需明确追加 `--confirm-execute`。这条路径从已核对的 spec 开始，不能对第 3 步通过 `request` 创建的旧任务补做 `prepare`。只有 AWO 1.0.0 时请继续使用上文的 `request`、`--thread ... start/status`。
-### 同一项目的多个任务共享执行者与额度
+- 切到另一个项目时，把参数换成 `--project report --run revision` 即可；重开终端后也能用同一条 `status` 命令继续查进度。
+- 如果任务中途中断，运行 `recover` 可以只读排查状态；确认要真正恢复执行时，再追加 `--confirm-execute`。
+- 这条路径适用于按 profile 准备的新任务；如果你仍在使用 AWO `v1.0.0`，请继续使用前文的 `request` 和 `--thread ... start/status`。
 
-已有 AWO 项目控制器时，在同一索引项目下增加 `scheduler`，例如 `"scheduler":{"state":"state/research","project_id":"实际项目 ID","token_file":"private/research.token"}`。这里的 `repository` 必须是控制器绑定的项目根。凭据文件放在版本库外；索引仅保存其位置。通过 `python maid.py shared --help` 查看入口：
+### 同一项目的多个任务共享执行者与预算
+
+如果你已经为某个项目配置了 AWO 控制器，可以在索引中该项目下增加 `scheduler` 字段（例如 `"scheduler":{"state":"state/research","project_id":"实际项目 ID","token_file":"private/research.token"}`；凭据文件请放在代码仓库之外，索引只记录路径）。运行 `python maid.py shared --help` 查看完整用法：
 
 ~~~powershell
 python maid.py shared --index $Index --project research command --file .\create-task.json
@@ -170,10 +177,13 @@ python maid.py shared --index $Index --project research command --file .\claim.j
 python maid.py shared --index $Index --project research status --task T-A
 ~~~
 
-命令文件使用已配置 AWO 控制器的 `task.create`、`scheduler.enqueue`、`scheduler.claim` 格式。成功领取后，使用返回的 assignment 和当前 epoch 执行 `dispatch --assignment ID --epoch N`。同一控制器里的任务争用同一份执行者、预算和写入范围；重开后按项目和任务 ID 查询。独立控制器之间没有全局额度仲裁。这条路径需要有 `awo_project.py schedule` 的 AWO。
+- 上述命令文件遵循 AWO 控制器的建单、入队与领取格式；领取成功后，按返回的任务分配编号和版本号执行 `dispatch --assignment ID --epoch N`。
+- 属于同一个控制器的任务会共享执行者、预算和文件写入保护（不同控制器之间各自独立）；重开终端后可按项目和任务 ID 继续查询。此功能需要支持 `awo_project.py schedule` 的新版 AWO。
 
-## 项目知识读取（v0.2.1）
+## 进阶：按授权读取项目知识（v0.2.1）
 
-配合 AWO v1.1.1，给 request 增加 --directory <目录清单.json> --project <项目键> --material <共享文档键>。草稿和任务准备均检查已发布版本与授权；撤权后再次请求将被拒绝。
+配合 AWO `v1.1.1`，可以在 `request` 命令中增加 `--directory <目录清单.json> --project <项目键> --material <共享文档键>`，让秘书按授权只读引用指定文档。草稿和任务准备阶段都会重新核验文档版本与权限；一旦撤权，后续请求会被自动拒绝。
 
-[秘书如何向 Owner 汇报](SECRETARY.md)
+---
+
+- [秘书如何向 Owner 汇报](SECRETARY.md)
