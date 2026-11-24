@@ -2,10 +2,8 @@
 import argparse
 import json
 from pathlib import Path
-import subprocess
-import sys
 
-from backend import select
+from backend import run
 from run_index import path_at
 
 
@@ -29,16 +27,12 @@ def main(argv):
                   str(path_at(base, domain["token_file"])), "--expected-project-id", domain["project_id"]]
         if not isinstance(params[-1], str) or not params[-1].strip():
             raise ValueError("missing project identity")
-        root, _ = select()
-        cli = root / "scripts/awo_project.py"
-        if not cli.is_file():
-            parser.error("configured AWO does not provide the project CLI")
         if args.action == "command":
             route = ["command", "--file", str(args.file.resolve())]
         elif args.action == "status":
             route = ["status", "--task", args.task]
         else:
             route = ["dispatch", "--assignment", args.assignment, "--epoch", str(args.epoch)]
-        return subprocess.call([sys.executable, "-B", str(cli), "schedule", *params, *route])
+        return run("schedule", [*params, *route])
     except (OSError, KeyError, TypeError, ValueError) as exc:
         parser.error(f"invalid shared scheduling configuration: {exc}")
