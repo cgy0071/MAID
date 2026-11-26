@@ -12,18 +12,37 @@ Tell your secretary which project you mean and what you want to achieve. It prep
 
 > MAID and AWO are two independent projects with separate releases; the documented dispatch-and-review workflow pairs MAID with a compatible AWO checkout.
 
-## Core modules and capabilities
+## Core modules and usage
 
-- **Flexible secretary interface, direct terminal escape hatch**
-  Runs with **Antigravity CLI (agy)** by default, or switch to **Claude** or another trusted local command. Stay in one conversation with your secretary, or jump straight into an executor's terminal whenever you want hands-on control.
-- **Draft-first approval gate**
-  Every request produces an undispatched draft listing the target repository, allowed file scope, and verification check. No code is touched and no paid execution runs until you confirm.
-- **Multi-project index and session recovery**
-  A local index maps project and task names to their working directories. Switch between projects freely, or close and reopen your terminal to check status, review verdicts, and evidence IDs without ever triggering duplicate dispatch.
-- **Authorized read-only project knowledge**
-  Attach an authorized published document when a task needs reference material. Version and permission checks run during both drafting and task preparation; once access is revoked, future reads are blocked.
-- **Plain-language reporting**
-  Your secretary leads with what happened and what it means for your project, translates internal jargon into plain language, and preserves exact numbers, verbatim quotes, evidence IDs, and open items.
+### 1. Flexible secretary interface, direct terminal escape hatch
+Runs with **Antigravity CLI (agy)** by default, or switch to **Claude** or another trusted local command. Stay in one conversation with your secretary, or jump straight into an executor's terminal whenever you want hands-on control.
+
+```powershell
+python maid.py --thread <THREAD_DIR> chat --secretary agy    # start chatting (Antigravity CLI also supports direct resume)
+```
+
+### 2. Draft-first approval gate
+Every request produces an undispatched draft (`dispatched: false`) listing the target repository, allowed file scope, and verification check. No code is touched and no paid execution runs until you confirm.
+
+```powershell
+python maid.py request --profile <PROFILE> --thread <THREAD_DIR> --secretary agy "Fix sum in app.py"
+python maid.py --thread <THREAD_DIR> start --confirm-execute # dispatch only after you approve the draft
+python maid.py --thread <THREAD_DIR> status                  # check verdict and evidence ID without resending
+```
+
+### 3. Multi-project index and shared scheduling
+A local index maps project and task names to their working directories so you can switch projects freely and reopen status checks after a terminal restart. When a project uses a shared AWO controller, multiple tasks can also share workers, budgets, and file-write guards.
+
+```powershell
+python maid.py runs --index <INDEX.json> --project research --run analysis status
+python maid.py shared --index <INDEX.json> --project research status --task T-A
+```
+
+### 4. Authorized read-only project knowledge
+Attach an authorized published document to `request` via `--directory <CATALOG.json> --project <PROJECT_KEY> --material <DOC_KEY>`. Version and permission checks run during both drafting and task preparation; once access is revoked, future reads are blocked.
+
+### 5. Plain-language reporting
+Your secretary leads with what happened and what it means for your project, translates internal jargon into plain language, and preserves exact numbers, verbatim quotes, evidence IDs, and open items (see [Secretary reporting rules](SECRETARY.md)).
 
 ## Three things that always stay in your hands
 
@@ -45,7 +64,7 @@ Report the check results and the next command, then wait for my decision.
 
 ## Further reading
 
-- [Manual setup and walkthrough](docs/setup.md): full steps for choosing a secretary, binding a Git repo, drafting, and confirming dispatch
-- [Multi-project indexing, shared scheduling, and troubleshooting](docs/setup.md#troubleshooting): managing multiple projects with a local index, session recovery, and common fixes
-- [Secretary reporting rules](SECRETARY.md): plain-language reporting while keeping numbers, quotes, and evidence IDs exact
+- [Manual setup and walkthrough](docs/setup.md): full steps for installation, binding a Git repo, and profile setup
+- [Multi-project indexing, shared scheduling, and troubleshooting](docs/setup.md#troubleshooting): index format, session recovery, and common fixes
+- [Secretary reporting rules](SECRETARY.md): plain-language reporting and verbatim citation rules
 - [AWO backend workflow and review engine](https://github.com/cgy0071/agent-workflow-orchestrator#readme): how isolated execution, independent review, and knowledge search work under the hood
