@@ -45,5 +45,7 @@ Report the check results and the next command, then wait for my decision.
 
 ## Further reading
 
-- [Manual setup, troubleshooting, and advanced guides](docs/setup.md)
-- [Secretary reporting rules](SECRETARY.md)
+- [Manual setup and walkthrough](docs/setup.md): full steps for choosing a secretary, binding a Git repo, drafting, and confirming dispatch
+- [Multi-project indexing, shared scheduling, and troubleshooting](docs/setup.md#troubleshooting): managing multiple projects with a local index, session recovery, and common fixes
+- [Secretary reporting rules](SECRETARY.md): plain-language reporting while keeping numbers, quotes, and evidence IDs exact
+- [AWO backend workflow and review engine](https://github.com/cgy0071/agent-workflow-orchestrator#readme): how isolated execution, independent review, and knowledge search work under the hood

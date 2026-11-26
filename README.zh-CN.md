@@ -45,5 +45,7 @@
 
 ## 深入阅读
 
-- [完整安装、手动配置与常见排错手册](docs/setup.zh-CN.md)
-- [秘书汇报规范](SECRETARY.md)
+- [完整安装与手动配置手册](docs/setup.zh-CN.md)：包含选秘书、绑定 Git 仓库、出草稿与确认派工的完整步骤
+- [多项目管理、共享调度与常见排错](docs/setup.zh-CN.md#常见问题排查)：如何用本地索引切换多个项目、跨会话找回证据及排查报错
+- [秘书汇报规范](SECRETARY.md)：如何用通俗语言汇报进展并严格保留数据、引文与证据编号
+- [AWO 后台工作流与独立审核引擎](https://github.com/cgy0071/agent-workflow-orchestrator/blob/main/README.zh-CN.md)：了解后台如何执行隔离运行、独立审核与知识库检索
