@@ -15,11 +15,13 @@
 ## 主要模块与用法
 
 ### 1. 多工具秘书交互，随时直连终端
-默认使用 **Antigravity CLI (agy)**，也可以换成 **Claude** 或你信任的本地命令。想省事时只和秘书聊；想亲自介入细节时，随时可以直接打开执行者的终端交流。
+选择你想用的本地客户端担任秘书。在 MAID 仓库根目录运行下面任意一条命令即可。Antigravity CLI (agy) 使用内置选项；Claude Code 和 Codex CLI 使用仓库附带的 JSON 命令配置。需要直接和执行者交流时，仍可打开其终端。
 
-```powershell
-python maid.py --thread <会话目录> chat --secretary agy      # 开始对话（Antigravity CLI 支持 direct 续聊）
-```
+~~~powershell
+python maid.py --thread ./chat-agy chat --secretary agy
+python maid.py --thread ./chat-claude chat --secretary ./examples/secretary-claude.json
+python maid.py --thread ./chat-codex chat --secretary ./examples/secretary-codex.json
+~~~
 
 ### 2. 先看草稿，确认后再派工
 每次需求都会先生成一份未派工的草稿（`dispatched: false`），清楚列出目标项目、允许改哪些文件、用什么脚本验收。没经你确认，不会动你的代码，也不会触发付费执行。

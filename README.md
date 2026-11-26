@@ -15,11 +15,13 @@ Tell your secretary which project you mean and what you want to achieve. It prep
 ## Core modules and usage
 
 ### 1. Flexible secretary interface, direct terminal escape hatch
-Runs with **Antigravity CLI (agy)** by default, or switch to **Claude** or another trusted local command. Stay in one conversation with your secretary, or jump straight into an executor's terminal whenever you want hands-on control.
+Choose the local client you want as your secretary. From the MAID repository root, run **one** of the commands below. Antigravity CLI (agy) has a built-in selector; Claude Code and Codex CLI use the supplied JSON command profiles. You can still open an executor terminal directly.
 
-```powershell
-python maid.py --thread <THREAD_DIR> chat --secretary agy    # start chatting (Antigravity CLI also supports direct resume)
-```
+~~~powershell
+python maid.py --thread ./chat-agy chat --secretary agy
+python maid.py --thread ./chat-claude chat --secretary ./examples/secretary-claude.json
+python maid.py --thread ./chat-codex chat --secretary ./examples/secretary-codex.json
+~~~
 
 ### 2. Draft-first approval gate
 Every request produces an undispatched draft (`dispatched: false`) listing the target repository, allowed file scope, and verification check. No code is touched and no paid execution runs until you confirm.
