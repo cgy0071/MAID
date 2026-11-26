@@ -1,61 +1,49 @@
-# Multi-Agent Inter-harness Dispatch (MAID)
+# Multi-Agent Inter-harness Dispatch - Your Multi-Agent Project Secretary
 
 English | [Chinese](README.zh-CN.md)
 
-MAID is a secretary for people managing several projects. Name the project and the result you want. Your secretary drafts a task with the allowed files and a way to check the work. Choose Antigravity CLI (agy), Claude or another local command.
+When you juggle several coding or research projects at once, you should not have to hop across a dozen terminals to track what each AI changed. **MAID is your multi-agent project secretary**: talk to one secretary about your goals and boundaries, review a clear task draft before any work begins, and get concise, evidence-backed reports when independent review finishes.
 
 ## How it works
 
 ![From request to independent review](docs/images/maid-overview.svg)
 
-Return a draft for revision or approve it. The documented dispatch workflow uses [AWO](https://github.com/cgy0071/agent-workflow-orchestrator) to execute the task and review it independently. The two projects release separately; this workflow requires a compatible AWO checkout.
+Tell your secretary which project you mean and what you want to achieve. It prepares a **task draft** spelling out the goal, the files that may change, and how success will be verified. Send the draft back if the scope is off; **nothing is dispatched until you explicitly approve it**. Execution and independent review can run on a compatible backend engine such as [AWO](https://github.com/cgy0071/agent-workflow-orchestrator), and your secretary reports the verdict and evidence ID back to you.
 
-## Working with your secretary
+> MAID and AWO are two independent projects with separate releases; the documented dispatch-and-review workflow pairs MAID with a compatible AWO checkout.
 
-### Choose the conversation
+## Core modules and capabilities
 
-Use Antigravity CLI (agy) by default, choose Claude, or configure another trusted local client.
-You can open the executor's terminal directly; Antigravity CLI also lets you reopen the secretary thread, while the example Claude profile starts a fresh conversation per turn.
+- **Flexible secretary interface, direct terminal escape hatch**
+  Runs with **Antigravity CLI (agy)** by default, or switch to **Claude** or another trusted local command. Stay in one conversation with your secretary, or jump straight into an executor's terminal whenever you want hands-on control.
+- **Draft-first approval gate**
+  Every request produces an undispatched draft listing the target repository, allowed file scope, and verification check. No code is touched and no paid execution runs until you confirm.
+- **Multi-project index and session recovery**
+  A local index maps project and task names to their working directories. Switch between projects freely, or close and reopen your terminal to check status, review verdicts, and evidence IDs without ever triggering duplicate dispatch.
+- **Authorized read-only project knowledge**
+  Attach an authorized published document when a task needs reference material. Version and permission checks run during both drafting and task preparation; once access is revoked, future reads are blocked.
+- **Plain-language reporting**
+  Your secretary leads with what happened and what it means for your project, translates internal jargon into plain language, and preserves exact numbers, verbatim quotes, evidence IDs, and open items.
 
-### Review a draft before anyone starts
+## Three things that always stay in your hands
 
-Ask for a concrete change: for example, fix a calculation in one file and check it with the project's verification script.
-The draft names the project, allowed files and check; send it back if the scope is wrong, or confirm it to authorize dispatch.
-
-### Find a task after switching projects
-
-The local index maps project and task names to their working directories, so you can leave one task and work on another.
-After a restart, select the original task to retrieve its recorded status, review decision and evidence ID without sending it again.
-
-### Give a task a source to read
-
-When a draft depends on a project document, name the published document that the task is allowed to read.
-The compatible backend checks its revision and permission during drafting and again during preparation; revoking access blocks future reads.
-
-### Get a report you can act on
-
-The secretary leads with what happened and what it means for your project, then gives the evidence or the decision it needs from you.
-It explains unfamiliar terms and keeps measurements, quotes and failure reasons intact.
-
-## What you control
-
-- Choose the secretary separately from the worker.
-- Keep a separate thread for each task and approve its allowed files.
-- Check the independent review before treating delivery as complete.
+1. **Independent role choices**: pick your secretary separately from the worker that edits code.
+2. **Explicit file boundaries**: each task gets its own thread, and you approve which files may change.
+3. **Review before done**: never take a worker's word for it; wait for the independent review verdict and evidence ID.
 
 ## Let your AI set this up
 
-Paste this into your local AI assistant to check the setup before starting a task.
+You do not need to type setup commands by hand. Copy this prompt into your local AI assistant (Codex, Claude Code, Antigravity CLI (agy), or Cursor) to install and verify MAID safely:
 
 ~~~text
-Help me set up Multi-Agent Inter-harness Dispatch (MAID) using docs/setup.md in the maid repository.
-Check Git, Python 3.10+ and installed clients.
-Ask for a destination; use the documented release in a fresh subdirectory.
-Run only the maid.py doctor checks against the documented compatible backend.
-Do not modify my projects, accounts or keys, make paid calls, or dispatch work.
-Report results and the next command, then stop.
+Help me set up Multi-Agent Inter-harness Dispatch (MAID) by following docs/setup.md in this repository.
+First check Git, Python 3.10+, and installed AI clients. Ask me which folder to use, and install the documented release into a fresh subdirectory.
+Run only maid.py doctor to verify the compatible backend.
+Do not modify my existing projects, accounts, or keys, and do not make paid model calls or dispatch real work.
+Report the check results and the next command, then wait for my decision.
 ~~~
 
-## Guides
+## Further reading
 
-[Manual setup, troubleshooting and advanced guides](docs/setup.md) | [Secretary reporting rules](SECRETARY.md)
+- [Manual setup, troubleshooting, and advanced guides](docs/setup.md)
+- [Secretary reporting rules](SECRETARY.md)
