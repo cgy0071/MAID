@@ -38,8 +38,12 @@ python maid.py runs --index <INDEX.json> --project research --run analysis statu
 python maid.py shared --index <INDEX.json> --project research status --task T-A
 ```
 
+![Switch projects without losing a task](docs/images/maid-multiproject.svg)
+
 ### 4. Authorized read-only project knowledge
 Attach an authorized published document to `request` via `--directory <CATALOG.json> --project <PROJECT_KEY> --material <DOC_KEY>`. Version and permission checks run during both drafting and task preparation; once access is revoked, future reads are blocked.
+
+![Read access is checked twice](docs/images/maid-knowledge.svg)
 
 ### 5. Plain-language reporting
 Your secretary leads with what happened and what it means for your project, translates internal jargon into plain language, and preserves exact numbers, verbatim quotes, evidence IDs, and open items (see [Secretary reporting rules](SECRETARY.md)).

@@ -38,8 +38,12 @@ python maid.py runs --index <索引.json> --project research --run analysis stat
 python maid.py shared --index <索引.json> --project research status --task T-A
 ```
 
+![切换项目，也能找回原任务](docs/images/maid-multiproject.zh-CN.svg)
+
 ### 4. 按授权只读引用项目资料
 如果任务需要参考项目文档或科研笔记，可以在 `request` 中显式指定获准读取的资料（`--directory <目录清单.json> --project <项目键> --material <文档键>`）。起草和准备执行阶段都会重新核验文档版本与权限；一旦撤权，后续请求立即被拒绝。
+
+![一份资料，两次读权限核验](docs/images/maid-knowledge.zh-CN.svg)
 
 ### 5. 清晰好懂的进度汇报
 秘书向你汇报时，先说“做到哪一步、对项目有什么影响”，把执行者的技术行话翻译成大白话，同时严格保留准确的数据、引文原话、证据编号和未完成事项（详见 [秘书汇报规范](SECRETARY.md)）。

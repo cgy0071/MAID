@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="456" viewBox="0 0 960 456" role="img" aria-labelledby="title desc" lang="en">
+<title id="title">Read access is checked twice</title><desc id="desc">With a compatible backend, attaching a document to a draft does not reserve future access. Published document: Selected project and version; 1. Draft the request: Check version and read grant; Draft with citation: Await owner confirmation; 2. Prepare the task: Recheck version and grant; Still authorized: Read the approved version; Revoked since drafting: Deny the new read.</desc>
+<style>
+text{font-family:'Segoe UI','Microsoft YaHei',sans-serif;fill:#1f2328}.bg{fill:#ffffff;stroke:#d0d7de}.s{fill:#eef1f4;stroke:#7d8590}.g{fill:#dafbe1;stroke:#4b9866}.o{fill:#fff1da;stroke:#b27826}.b{fill:#ddf4ff;stroke:#54aeff}.edge{fill:none;stroke:#59636e;stroke-width:1.6}.tip{fill:#59636e}
+@media(prefers-color-scheme:dark){text{fill:#f0f6fc}.bg{fill:#0d1117;stroke:#3d444d}.s{fill:#20262e;stroke:#9aa4af}.g{fill:#123322;stroke:#57ab75}.o{fill:#382817;stroke:#cd994e}.b{fill:#0c2d6b;stroke:#388bfd}.edge{stroke:#aab5bf}.tip{fill:#aab5bf}}
+</style><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="tip" d="M0 0L10 5L0 10Z"/></marker></defs>
+<rect class="bg" x="0.5" y="0.5" width="959" height="455" rx="12"/>
+<text x="30" y="36" font-size="24" font-weight="650">Read access is checked twice</text><text x="30" y="65" font-size="15">With a compatible backend, attaching a document to a draft does not reserve future access.</text>
+<path class="edge" d="M270 126 H355" marker-end="url(#arrow)"/>
+<path class="edge" d="M600 126 H685" marker-end="url(#arrow)"/>
+<path class="edge" d="M810 160 V205" marker-end="url(#arrow)"/>
+<path class="edge" d="M690 244 H605" marker-end="url(#arrow)"/>
+<path class="edge" d="M810 278 V311" marker-end="url(#arrow)"/>
+<rect class="g" x="30" y="92" width="240" height="68" rx="10"/>
+<text x="42" y="120" font-size="17" font-weight="650">Published document</text><text x="42" y="144" font-size="13">Selected project and version</text>
+<rect class="o" x="360" y="92" width="240" height="68" rx="10"/>
+<text x="372" y="120" font-size="17" font-weight="650">1. Draft the request</text><text x="372" y="144" font-size="13">Check version and read grant</text>
+<rect class="s" x="690" y="92" width="240" height="68" rx="10"/>
+<text x="702" y="120" font-size="17" font-weight="650">Draft with citation</text><text x="702" y="144" font-size="13">Await owner confirmation</text>
+<rect class="o" x="690" y="210" width="240" height="68" rx="10"/>
+<text x="702" y="238" font-size="17" font-weight="650">2. Prepare the task</text><text x="702" y="262" font-size="13">Recheck version and grant</text>
+<rect class="s" x="360" y="210" width="240" height="68" rx="10"/>
+<text x="372" y="238" font-size="17" font-weight="650">Still authorized</text><text x="372" y="262" font-size="13">Read the approved version</text>
+<rect class="s" x="690" y="316" width="240" height="68" rx="10"/>
+<text x="702" y="344" font-size="17" font-weight="650">Revoked since drafting</text><text x="702" y="368" font-size="13">Deny the new read</text>
+<rect class="s" x="32" y="422" width="15" height="15" rx="4"/><text x="56" y="435" font-size="14">Records and outcomes</text><rect class="g" x="314" y="422" width="15" height="15" rx="4"/><text x="338" y="435" font-size="14">Resources and processing</text><rect class="o" x="596" y="422" width="15" height="15" rx="4"/><text x="620" y="435" font-size="14">Checks and controls</text>
+</svg>
