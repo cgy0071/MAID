@@ -1,0 +1,204 @@
+# MAID 手动配置与使用手册
+
+[返回项目首页](../README.zh-CN.md)
+
+[English](setup.md) | 中文
+
+你可以只和一名项目秘书对话，同时管理多个项目。告诉它这次要做什么、属于哪个项目，它会把需求整理成一张任务单：**目标是什么、哪些文件可以改、怎样才算完成**。范围不对，就让它改草稿；只有你确认后，任务才会派发。
+
+秘书默认使用 **Antigravity CLI (agy)**，也可以换成 Claude 等本地工具。派工后，你可以继续问秘书进度、结果和验收依据，也可以随时打开终端，直接和执行者交流。
+
+## 一项任务怎样从想法变成结果
+
+![多项目秘书：退回或确认草稿、执行与审核、回报证据和直连终端](../docs/images/maid-overview.zh-CN.svg)
+
+**如何联用执行引擎？** 下文用 [AWO](https://github.com/cgy0071/agent-workflow-orchestrator#how-it-works) 演示派工和独立验收。两个项目各自发布和更新；使用这条路径时，给 MAID 配置兼容的 AWO 即可。直接使用 AWO 不需要安装 MAID。
+
+1. **选秘书**：决定用 Antigravity CLI (agy) 还是 Claude 和你对话。
+2. **绑项目**：用 `configure.py` 指定要改哪个 Git 仓库、允许改哪些文件、用什么脚本验收。
+3. **看草稿**：用 `request` 让秘书先写一份任务草稿（此时**不会**派工）。
+4. **确认派工**：核对范围没问题后，运行 `start --confirm-execute` 真正交给 Codex 执行。
+5. **查验收**：用 `status` 查看结果和证据编号；开新任务时换一个新目录，互不干扰。
+
+---
+
+## 让 AI 帮你快速部署
+
+把下面整段复制给 Codex、Claude Code、Antigravity CLI (agy) 或 Cursor 等助手：
+
+```text
+先检查 Git、Python 3.10+ 的路径和版本，并列出已安装的客户端（只查路径或版本，不启动会话）。缺少必需工具时告诉我，不要自行安装。
+使用我指定的安装目录；如果没给目录，先问我。只在新的子目录中克隆，不覆盖现有文件。
+从 https://github.com/cgy0071/MAID.git 克隆 v0.2.1。为运行 doctor，优先使用我提供的兼容 AWO 路径（仅本次会话设置 MAID_AWO_ROOT）；否则从 https://github.com/cgy0071/agent-workflow-orchestrator.git 克隆 v1.1.1 到同级 agent-workflow-orchestrator 目录。
+进入 MAID，用已检查的 Python 运行 python -B maid.py doctor，记录识别的后端路径和退出码。
+不要修改我的项目、操作账号或密钥，也不要发起付费模型调用或真实派工。最后汇报环境、安装路径、自检结果和下一步可复制的命令；下一步只列出，不执行。
+```
+
+## 安装与更新（Windows）
+
+先确认本机已安装 **Git** 和 **Python 3.10+**；如果要实际派工执行代码任务，还需要已登录的 **Codex CLI**。
+
+要试用上图的联用流程，可在同一个父目录下打开 PowerShell，克隆下面这组已验证的版本并做一次自检：
+
+~~~powershell
+git clone --branch v0.2.1 https://github.com/cgy0071/MAID.git
+git clone --branch v1.1.1 https://github.com/cgy0071/agent-workflow-orchestrator.git
+cd MAID
+python maid.py doctor
+~~~
+
+### 已经克隆过 AWO？
+如果你电脑上已经有一份兼容版本的 AWO，不用重新克隆，在当前 PowerShell 告诉 MAID 它在哪里即可：
+
+~~~powershell
+$env:MAID_AWO_ROOT = 'D:\Tools\agent-workflow-orchestrator'
+python maid.py doctor
+~~~
+
+**几个小提醒（最容易踩坑的地方）：**
+- **默认查找位置**：`backend.py` 默认去 `MAID` 同级目录找 `agent-workflow-orchestrator`。一旦设置了 `$env:MAID_AWO_ROOT`，MAID 就只认你指定的路径，不会再自动回退到同级目录（新开 PowerShell 窗口需要重新设置）。
+- **联用时检查接口兼容性**：有公开入口 `scripts/awo_app.py` 的 AWO 必须通过 `capabilities` 检查：协议为 1，且支持 `maid` 和 `profile`。检查失败请核对版本；MAID 不会绕过检查改走旧接口。只有入口不存在时才走 AWO `v1.0.0` 的旧布局；旧版不支持普通 request 的知识授权路径。
+- **`doctor` 查什么**：它会打印实际找到的 AWO 路径并检查后端命令能否打开，但不会测试模型登录或真正跑任务。
+
+**日常更新：**
+- 只更新 MAID：在 `MAID` 目录运行 `git pull --ff-only`。
+- 只更新 AWO：在 AWO 目录运行 `git fetch --tags`，用 `git switch --detach 标签名` 切到兼容版本，再回 MAID 运行 `python maid.py doctor` 确认入口正常。（仓库里的旧 ZIP 仅作历史存档，不用管。）
+
+---
+
+## 1. 选择你的秘书
+
+先确保你想用的 CLI 工具已经安装并登录。在 PowerShell 里二选一：
+
+~~~powershell
+$Secretary = 'agy'                                    # 默认：Antigravity CLI (agy)
+# $Secretary = '.\examples\secretary-claude.json'     # 想用 Claude 时取消这一行注释（无需 Antigravity CLI (agy)）
+~~~
+
+如果只想先随便聊聊、不涉及具体项目，可以直接开一个对话线程（输入 `exit` 退出）：
+
+~~~powershell
+python maid.py --thread "$env:LOCALAPPDATA\MAID\chat-01" chat --secretary $Secretary
+~~~
+
+> 提示：使用默认的 Antigravity CLI (agy) 时，可以用 `python maid.py direct --thread "$env:LOCALAPPDATA\MAID\chat-01" --secretary agy` 接着上次的对话继续聊；附带的 Claude 示例配置每次都是独立对话。如果你想接入自己的命令行工具，可以复制 `examples\secretary-claude.json`，把里面的 `turn` 改成你信任的命令（从标准输入读问题，往标准输出写答复即可）。
+
+---
+
+## 2. 绑定你的项目和允许修改的文件
+
+把下面的 `$Project`（你的 Git 仓库路径）、允许修改的文件和验收脚本换成你自己的。示例假设仓库里已经有至少一次提交，并且包含 `app.py` 和一个验证脚本 `verify.py`（检查不通过时返回非零退出码）：
+
+~~~powershell
+$Project = 'D:\Projects\MyProject'          # 你的 Git 仓库根目录
+$Thread  = "$env:LOCALAPPDATA\MAID\task-01" # 每次新任务用新路径，不要提前手动创建这个文件夹
+$Profile = "$Thread.json"
+
+New-Item -ItemType Directory -Force (Split-Path $Thread) | Out-Null
+python configure.py --project $Project --thread $Thread --allow app.py --verify-script verify.py --profile $Profile
+~~~
+
+- `--project` 是你的代码仓库；`--thread` 用来存放本次任务的草稿与状态记录（注意两者不要互相包含）。
+- 如果允许修改多个文件，可以重复传多个 `--allow`。
+- `configure.py` 只生成本地配置文件，**不会**调用模型，也**不会**覆盖已经存在的配置文件。
+
+---
+
+## 3. 先看草稿，确认后再派工
+
+先把需求发给秘书，让它生成一份任务草稿：
+
+~~~powershell
+python maid.py request --profile $Profile --thread $Thread --secretary $Secretary "修复 app.py 的求和函数，使 verify.py 通过"
+~~~
+
+生成后，仔细核对里面的目标和允许修改的文件。只要看到 `dispatched: false`，就说明**还没有真正派工**，可以放心检查或重来。
+
+确认无误，并且同意使用本机登录的 Codex 执行、允许把通过验收的改动提交到本次任务分支后，再执行派工并查看进度：
+
+~~~powershell
+python maid.py --thread $Thread start --confirm-execute
+python maid.py --thread $Thread status
+~~~
+
+以后重开终端想看结果时，回到 `MAID` 目录，把 `$Thread` 设回当时的路径，直接运行 `status` 就能看到验收结论和证据编号，**不会重复派工**。
+
+---
+
+## 4. 开启下一项任务与切换查询
+
+同一个项目可以做很多次任务。准备下一项任务时，回到第 2 步，把 `task-01` 换成 `task-02`（生成新的 `$Profile`），再出草稿、确认派工即可。如果是另一个项目，记得一并换掉 `$Project`、允许修改的文件和验证脚本。
+
+> `configure.py` 会用任务目录名拼出目标分支 `refs/heads/maid-<任务名>`，所以同一个仓库下请给不同任务起不同的名字。
+
+想回头查看旧任务的状态？只要把 `--thread` 指回原来的目录就行：
+
+~~~powershell
+python maid.py --thread "$env:LOCALAPPDATA\MAID\task-01" status
+python maid.py --thread "$env:LOCALAPPDATA\MAID\task-02" status
+~~~
+
+---
+
+## 常见问题排查
+
+| 遇到什么情况 | 怎么处理 |
+| --- | --- |
+| 报错 `Incompatible AWO: ... lacks ...` | 看清报错里打印的路径：如果是路径指错了，重新设置 `$env:MAID_AWO_ROOT`；如果该 AWO 分支确实缺少秘书接口，单独克隆 AWO 的 `v1.1.1` 标签即可，不用动你原来的 AWO 工作区。 |
+| `doctor` 正常，但 `request` 找不到 Antigravity CLI (agy) | 确认当前终端里能直接运行 `agy`；如果改用 Claude，请取消 `$Secretary = '.\examples\secretary-claude.json'` 的注释，并确保 Claude CLI 已安装且登录。 |
+| `configure.py` 提示验证脚本不存在或 profile 已存在 | 检查 `--verify-script` 写的是不是项目里真实存在的脚本；已有配置不会被覆盖，开新任务请换一个任务名。 |
+| 草稿里显示 `dispatched: false` | 这是正常现象，说明还在审阅草稿阶段。确认范围无误后再执行 `start --confirm-execute`；不确定以前有没有派过工，先运行 `status` 查一下。 |
+| 切到别的项目后，查不到刚才的结果 | 回到 `MAID` 目录，用原任务对应的 `--thread` 路径查 `status`；千万不要为了查结果重新运行 `start`。 |
+
+## 进阶：用同一秘书管理多个项目
+
+如果你想用一个本地索引文件集中管理多个项目和任务，可以先运行 `python maid.py runs --help` 查看按名称操作任务的命令。
+
+索引文件保存在你自己选定的本地目录（重开 PowerShell 后继续用同一份即可）。它只记录项目名、任务名和对应路径，真正的任务状态、验收证据和恢复判断都由 AWO 维护。
+
+例如在 `D:\Work\index.json` 中写入：
+
+~~~json
+{"projects":{
+  "research":{"repository":"research","runs":{"analysis":{"spec":"profiles/analysis.json","thread":"tasks/analysis"}}},
+  "report":{"repository":"report","runs":{"revision":{"spec":"profiles/revision.json","thread":"tasks/revision"}}}
+}}
+~~~
+
+- 索引里的相对路径以索引文件所在目录为基准；
+- 先用前文的 `configure.py` 为每项任务分别生成 profile，再按需修改其中的 `goal` 并核对允许修改的范围（确保仓库与任务目录和索引一致）；
+- 配合新版 AWO，可以在同一个终端里按项目名和任务名直接推进：
+
+~~~powershell
+$Index = 'D:\Work\index.json'
+python maid.py runs --index $Index list
+python maid.py runs --index $Index --project research --run analysis prepare
+python maid.py runs --index $Index --project research --run analysis start --confirm-execute
+python maid.py runs --index $Index --project research --run analysis status
+~~~
+
+- 切到另一个项目时，把参数换成 `--project report --run revision` 即可；重开终端后也能用同一条 `status` 命令继续查进度。
+- 如果任务中途中断，运行 `recover` 可以只读排查状态；确认要真正恢复执行时，再追加 `--confirm-execute`。
+- 这条路径适用于按 profile 准备的新任务；如果你仍在使用 AWO `v1.0.0`，请继续使用前文的 `request` 和 `--thread ... start/status`。
+
+### 同一项目的多个任务共享执行者与预算
+
+如果你已经为某个项目配置了 AWO 控制器，可以在索引中该项目下增加 `scheduler` 字段（例如 `"scheduler":{"state":"state/research","project_id":"实际项目 ID","token_file":"private/research.token"}`；凭据文件请放在代码仓库之外，索引只记录路径）。运行 `python maid.py shared --help` 查看完整用法：
+
+~~~powershell
+python maid.py shared --index $Index --project research command --file .\create-task.json
+python maid.py shared --index $Index --project research command --file .\enqueue.json
+python maid.py shared --index $Index --project research command --file .\claim.json
+python maid.py shared --index $Index --project research status --task T-A
+~~~
+
+- 上述命令文件遵循 AWO 控制器的建单、入队与领取格式；领取成功后，按返回的任务分配编号和版本号执行 `dispatch --assignment ID --epoch N`。
+- 属于同一个控制器的任务会共享执行者、预算和文件写入保护（不同控制器之间各自独立）；重开终端后可按项目和任务 ID 继续查询。此功能需要支持 `awo_project.py schedule` 的新版 AWO。
+
+## 进阶：按授权读取项目知识（v0.2.1）
+
+配合 AWO `v1.1.1`，可以在 `request` 命令中增加 `--directory <目录清单.json> --project <项目键> --material <共享文档键>`，让秘书按授权只读引用指定文档。草稿和任务准备阶段都会重新核验文档版本与权限；一旦撤权，后续请求会被自动拒绝。
+
+---
+
+- [秘书如何向 Owner 汇报](../SECRETARY.md)
