@@ -56,3 +56,18 @@ Prepare the named run first with an evidence_route in its operator-owned spec.
 A previous confirmation cannot authorize a changed selection. If a source or
 permission changed, review a fresh draft. Use status or recover for a run that
 has already started; never create another run to retry its dispatch.
+
+### Read the evidence decision or recover a run
+
+For a confirmed evidence draft, the worker's RESULT.md ends with a JSON block:
+each conclusion names its original excerpt and exact location. The independent
+reviewer's REVIEW.md records which citations support each conclusion and why.
+Only the AWO ledger assigns an accepted evidence ID. A missing citation or an
+unsupported conclusion requires repair or rejection; unavailable material
+blocks the read.
+
+After reopening MAID, use the same index, project and run with the status
+operation. Read result.task.accepted_evidence_id; a missing ID is not acceptance.
+If the run stopped after freezing but before dispatch, start the same run with
+the original digest. If dispatch was attempted and its receipt is missing,
+inspect status and use recover on that run. Do not create a replacement run.
