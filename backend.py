@@ -44,4 +44,17 @@ def run(action, argv):
         args = [str(Path(__file__).with_name("legacy_profile.py")), str(root)]
     else:
         args = [str(root / "apps/maid/maid.py")]
-    return subprocess.call([sys.executable, "-B", *args, *argv])
+    cmd = [sys.executable, "-B", *args, *argv]
+    if action == "status" or (action == "maid" and argv[-1:] == ["status"]):
+        from continuity import render
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE)
+        sys.stdout.buffer.write(proc.stdout)
+        if proc.returncode == 0:
+            try:
+                card = render(json.loads(proc.stdout))
+            except (ValueError, AttributeError, KeyError, TypeError):
+                card = ""  # Legacy or unknown response: preserve the original stream.
+            if card:
+                print(card, file=sys.stderr)
+        return proc.returncode
+    return subprocess.call(cmd)
