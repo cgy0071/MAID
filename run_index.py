@@ -20,7 +20,12 @@ def main(argv):
     p.add_argument("--run")
     p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover"))
     p.add_argument("--confirm-execute", action="store_true")
+    p.add_argument("--draft", type=Path)
+    p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     a = p.parse_args(argv)
+    if a.draft is not None or a.draft_digest is not None:
+        if not (a.operation == "start" and a.confirm_execute and a.draft and a.draft_digest):
+            p.error("Evidence requires start --confirm-execute, --draft and --draft-digest")
     try:
         base = a.index.resolve().parent
         projects = json.loads(a.index.read_text(encoding="utf-8-sig"))["projects"]
@@ -50,6 +55,8 @@ def main(argv):
             if a.operation not in ("start", "recover"):
                 p.error("only start and recover take confirmation")
             args.append("--confirm-execute")
+        if a.draft:
+            args.extend(["--draft", str(a.draft.resolve()), "--draft-digest", a.draft_digest])
         return backend.run(a.operation, args)
     except (OSError, KeyError, ValueError, TypeError) as exc:
         p.error(f"invalid project/run index or spec: {exc}")

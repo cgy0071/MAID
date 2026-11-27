@@ -47,3 +47,12 @@ page or byte range. Keep token files and target configurations private.
 
 主题查询可删选、取消；学习会话中的 draft 命令只接受原文编号。
 个人资料须先有目标任务获准读取的对应记录。草案文件只保存指针，正文仅在预览中显示。
+
+### Confirm selected evidence
+
+After reading the draft, copy the displayed draft_sha256. Use
+`maid.py runs --index INDEX --project PROJECT --run RUN start --confirm-execute --draft DRAFT.json --draft-digest SHA256`.
+Prepare the named run first with an evidence_route in its operator-owned spec.
+A previous confirmation cannot authorize a changed selection. If a source or
+permission changed, review a fresh draft. Use status or recover for a run that
+has already started; never create another run to retry its dispatch.
