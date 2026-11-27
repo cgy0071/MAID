@@ -12,7 +12,7 @@ def select(required=None):
     entry = root / "scripts/awo_app.py"
     if not os.path.lexists(entry):
         if required:
-            raise SystemExit(f"Incompatible AWO: legacy layout does not advertise {required}.")
+            raise SystemExit(f"Incompatible AWO: legacy layout does not advertise {required}; upgrade AWO.")
         for rel in ("apps/maid/maid.py", "scripts/secretary_adapter.py", "scripts/project_entry.py"):
             if not (root / rel).is_file():
                 raise SystemExit(f"Incompatible AWO: {root} lacks {rel}. See README or set MAID_AWO_ROOT.")
@@ -27,7 +27,7 @@ def select(required=None):
         if not isinstance(caps, list) or not all(isinstance(x, str) for x in caps) or not {"maid", "profile"}.issubset(caps):
             raise ValueError("expected maid and profile capabilities")
         if required and required not in caps:
-            raise ValueError(f"backend does not advertise {required}")
+            raise ValueError(f"backend does not advertise {required}; upgrade AWO")
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         raise SystemExit(f"Incompatible AWO: {entry} capabilities check failed: {exc}") from exc
     return root, entry

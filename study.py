@@ -147,6 +147,8 @@ def main(argv=None):
     p.add_argument("--known")
     p.add_argument("--goal")
     p.add_argument("--secretary", help="Optional trusted tutor profile or agy; receives selected excerpts")
+    p.add_argument("--target", help="Target task read configuration for draft N[,N...]")
+    p.add_argument("--draft-out", help="New task draft file")
     args = p.parse_args(argv)
     try:
         lib = Library(args.library)
@@ -162,7 +164,7 @@ def main(argv=None):
         def show(value):
             print(json.dumps(value, ensure_ascii=False), flush=True)
         show(study.lesson(goal))
-        print("ask QUESTION | open N | answer N TEXT | save YOUR OWN WORDS | quit", flush=True)
+        print("ask QUESTION | open N | answer N TEXT | save YOUR OWN WORDS | draft N[,N...] | quit", flush=True)
         for line in sys.stdin:
             action, _, value = line.strip().partition(" ")
             if action == "quit":
@@ -175,12 +177,20 @@ def main(argv=None):
             elif action == "answer":
                 number, _, answer = value.partition(" ")
                 show(study.answer(int(number), answer))
+            elif action == "draft":
+                from evidence_request import draft, numbers
+                if not args.target:
+                    raise ValueError("Select a target task using --target.")
+                indices = numbers(value, len(study.refs))
+                for n in indices:
+                    study.original(n)
+                draft(args.target, goal, [study.refs[n-1][1] for n in indices], args.draft_out)
             elif action == "save":
                 show({"个人笔记": study.save(value)})
             else:
                 print("Unknown action.")
         return 0
     except (Exception, KeyboardInterrupt) as exc:
-        print(f"Study stopped ({type(exc).__name__}). Check selection, revision and current read access.",
+        print(f"Study stopped ({type(exc).__name__}). Check original selection, target task permissions and source revision.",
               file=sys.stderr)
         return 2

@@ -18,3 +18,32 @@ Use the AWO checkout containing the stage A facade (set MAID_AWO_ROOT if it is n
 ```
 
 Use `Get-FileHash -Algorithm SHA256 <file>` and lowercase its digest. Omit the awo section for a personal-files-only catalog. Protect the catalog and token file with your OS user permissions. Keep personal notes outside your source repository.
+
+## Turn a selection into a draft / 将选段带入任务草案
+
+Use `python maid.py request --query "latency" --target target.json --out draft.json`.
+Keep the displayed excerpt numbers (for example 1,3), choose all, or cancel.
+For learning, start study with `--target target.json --draft-out draft.json`,
+then enter `draft 1,3` using original passage numbers from the latest answer.
+The draft records pointers, goal, task, project, and digests. A missing grant
+or changed revision blocks the operation. An empty search displays no_hits.
+
+The target is a private local JSON file, for example:
+
+~~~json
+{"state":"D:/local/state","root":"D:/local/project","project_id":"PROJECT_ID",
+ "task":"TARGET_TASK","task_token_file":"D:/private/task.token",
+ "doc_token_file":"D:/private/document.token","kb":true,
+ "personal_sources":{"paper":{"kind":"pdf","record_id":"S2"}}}
+~~~
+
+The target task must already exist. For published documents its AWO task body
+lists allowed IDs under evidence_document_ids. Use a separate document read
+credential for the same recipient. For KB records enable kb and grant the
+target task read access in the plugin. To hand a personal file excerpt over,
+map its library ID to the target's verified SRC record in personal_sources.
+The backend compares the source file digest, excerpt digest, and physical
+page or byte range. Keep token files and target configurations private.
+
+主题查询可删选、取消；学习会话中的 draft 命令只接受原文编号。
+个人资料须先有目标任务获准读取的对应记录。草案文件只保存指针，正文仅在预览中显示。
