@@ -23,4 +23,11 @@ def render(response):
     if c.get("decision"):
         lines.append(c["decision"]["question"])
         lines.extend(f"  {option}: {impact}" for option, impact in c["decision"]["options"])
+    session = c.get("session")
+    if isinstance(session, dict) and session.get("records") is True:
+        lines.append("查看记录 / 查看交付和工作区：session --action records")
+        if session.get("focus") is True:
+            lines.append("定位原终端：session --action focus")
+        if session.get("resume") is True:
+            lines.append("恢复原生对话：session --action resume")
     return "\n".join(lines)

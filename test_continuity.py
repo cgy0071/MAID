@@ -4,6 +4,12 @@ from continuity import render
 
 
 class Continuity(unittest.TestCase):
+    def test_only_verified_session_actions_are_offered(self):
+        for focus, resume in ((False, False), (True, False), (False, True)):
+            text = render({"continuity": dict(version=1, session=dict(records=True, focus=focus, resume=resume))})
+            self.assertIn("--action records", text)
+            self.assertEqual("--action focus" in text, focus)
+            self.assertEqual("--action resume" in text, resume)
     def test_old_backend_silent(self):
         self.assertEqual(render({"result": {"task": {}}}), "")
 

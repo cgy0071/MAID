@@ -18,11 +18,14 @@ def main(argv):
     p.add_argument("--index", type=Path, required=True, help="local project/run index JSON")
     p.add_argument("--project")
     p.add_argument("--run")
-    p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover"))
+    p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover", "session"))
+    p.add_argument("--action", choices=("records", "focus", "resume"))
     p.add_argument("--confirm-execute", action="store_true")
     p.add_argument("--draft", type=Path)
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     a = p.parse_args(argv)
+    if bool(a.action) != (a.operation == "session"):
+        p.error("session requires --action records, focus or resume")
     if a.draft is not None or a.draft_digest is not None:
         if not (a.operation == "start" and a.confirm_execute and a.draft and a.draft_digest):
             p.error("Evidence requires start --confirm-execute, --draft and --draft-digest")
@@ -49,6 +52,8 @@ def main(argv):
         if (thread / "spec.json").exists() and (thread / "spec.json").read_bytes() != spec.read_bytes():
             p.error("selected spec differs from the frozen run")
         args = ["--thread", str(thread)]
+        if a.action:
+            args.extend(["--action", a.action])
         if a.operation == "prepare":
             args.extend(["--spec", str(spec)])
         if a.confirm_execute:
