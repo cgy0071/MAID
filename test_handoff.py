@@ -35,11 +35,18 @@ class Handoff(unittest.TestCase):
                 send.assert_called_with("recover", ["--thread", str(self.thread), *flags,
                                                     "--rework-attempt", "--confirm-execute"])
 
+    def test_navigate_replacement_from_original_index_without_dispatch(self):
+        with patch("backend.run", return_value=0) as send:
+            run_index.main(self.args + ["status", "--rework-attempt", "--handoff-attempt"])
+            send.assert_called_once_with("status", ["--thread", str(self.thread),
+                                                   "--rework-attempt", "--handoff-attempt"])
+
     def test_incomplete_or_misplaced_action_never_invokes_backend(self):
         flags = ["--handoff", "manual", "--state-version", "ab" * 32, "--recipient", "operator"]
         with patch("backend.run") as send, contextlib.redirect_stderr(io.StringIO()):
             for cmd in (["recover", *flags], ["recover", *flags[:-2], "--confirm-execute"],
-                        ["start", *flags, "--confirm-execute"], ["status", "--recipient", "x"]):
+                        ["start", *flags, "--confirm-execute"], ["status", "--recipient", "x"],
+                        ["prepare", "--handoff-attempt"]):
                 with self.subTest(cmd=cmd), self.assertRaises(SystemExit):
                     run_index.main(self.args + cmd)
             send.assert_not_called()

@@ -28,6 +28,7 @@ def main(argv):
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     p.add_argument("--evidence-route", type=Path, help="fresh recipient grants for rework")
     p.add_argument("--rework-attempt", action="store_true", help="select the linked repair attempt")
+    p.add_argument("--handoff-attempt", action="store_true", help="select the verified replacement attempt")
     a = p.parse_args(argv)
     if any(x is not None for x in (a.handoff, a.state_version, a.recipient)):
         if not (a.operation == "recover" and a.confirm_execute and a.handoff
@@ -35,8 +36,8 @@ def main(argv):
             p.error("handoff requires recover, --handoff, --state-version, --recipient and --confirm-execute")
     if a.evidence_route and a.operation != "rework":
         p.error("--evidence-route requires rework")
-    if a.rework_attempt and a.operation not in ("start", "recover", "status"):
-        p.error("--rework-attempt requires start, recover or status")
+    if (a.rework_attempt or a.handoff_attempt) and a.operation not in ("start", "recover", "status"):
+        p.error("linked attempts require start, recover or status")
     if bool(a.action) != (a.operation == "session"):
         p.error("session requires --action records, focus or resume")
     if a.draft is not None or a.draft_digest is not None:
@@ -70,6 +71,8 @@ def main(argv):
                          "--recipient", a.recipient])
         if a.rework_attempt:
             args.append("--rework-attempt")
+        if a.handoff_attempt:
+            args.append("--handoff-attempt")
         if a.evidence_route:
             args.extend(["--evidence-route", str(a.evidence_route.resolve())])
         if a.action:
