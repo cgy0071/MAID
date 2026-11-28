@@ -4,6 +4,8 @@ English | [Chinese](README.zh-CN.md)
 
 When you juggle several coding or research projects at once, you should not have to hop across a dozen terminals to track what each AI changed. **MAID is your multi-agent project secretary**: talk to one secretary about your goals and boundaries, review a clear task draft before any work begins, and get concise, evidence-backed reports when independent review finishes.
 
+Study a personal PDF, Markdown note, or authorized project document with [MAID study mode](docs/study.md). Choose a source, ask follow-up questions, and open a cited passage before saving your own notes.
+
 ## How it works
 
 ![From request to independent review](docs/images/maid-overview.svg)

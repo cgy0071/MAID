@@ -12,7 +12,7 @@ def select(required=None):
     entry = root / "scripts/awo_app.py"
     if not os.path.lexists(entry):
         if required:
-            raise SystemExit(f"Incompatible AWO: legacy layout does not advertise {required}.")
+            raise SystemExit(f"Incompatible AWO: legacy layout does not advertise {required}; upgrade AWO.")
         for rel in ("apps/maid/maid.py", "scripts/secretary_adapter.py", "scripts/project_entry.py"):
             if not (root / rel).is_file():
                 raise SystemExit(f"Incompatible AWO: {root} lacks {rel}. See README or set MAID_AWO_ROOT.")
@@ -27,7 +27,7 @@ def select(required=None):
         if not isinstance(caps, list) or not all(isinstance(x, str) for x in caps) or not {"maid", "profile"}.issubset(caps):
             raise ValueError("expected maid and profile capabilities")
         if required and required not in caps:
-            raise ValueError(f"backend does not advertise {required}")
+            raise ValueError(f"backend does not advertise {required}; upgrade AWO")
     except (OSError, ValueError, subprocess.SubprocessError) as exc:
         raise SystemExit(f"Incompatible AWO: {entry} capabilities check failed: {exc}") from exc
     return root, entry
@@ -44,4 +44,17 @@ def run(action, argv):
         args = [str(Path(__file__).with_name("legacy_profile.py")), str(root)]
     else:
         args = [str(root / "apps/maid/maid.py")]
-    return subprocess.call([sys.executable, "-B", *args, *argv])
+    cmd = [sys.executable, "-B", *args, *argv]
+    if action in ("status", "recover") or (action == "maid" and argv[-1:] == ["status"]):
+        from continuity import render
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE)
+        sys.stdout.buffer.write(proc.stdout)
+        if proc.returncode == 0:
+            try:
+                card = render(json.loads(proc.stdout))
+            except (ValueError, AttributeError, KeyError, TypeError):
+                card = ""  # Legacy or unknown response: preserve the original stream.
+            if card:
+                print(card, file=sys.stderr)
+        return proc.returncode
+    return subprocess.call(cmd)
