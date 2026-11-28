@@ -21,11 +21,18 @@ def main(argv):
     p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover", "session", "rework"))
     p.add_argument("--action", choices=("records", "focus", "resume"))
     p.add_argument("--confirm-execute", action="store_true")
+    p.add_argument("--handoff", choices=("continue", "manual", "reassign"))
+    p.add_argument("--state-version", help="observed version from read-only recover")
+    p.add_argument("--recipient", help="executor or operator identity for this handoff")
     p.add_argument("--draft", type=Path)
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     p.add_argument("--evidence-route", type=Path, help="fresh recipient grants for rework")
     p.add_argument("--rework-attempt", action="store_true", help="select the linked repair attempt")
     a = p.parse_args(argv)
+    if any(x is not None for x in (a.handoff, a.state_version, a.recipient)):
+        if not (a.operation == "recover" and a.confirm_execute and a.handoff
+                and a.state_version and a.recipient and a.recipient.strip()):
+            p.error("handoff requires recover, --handoff, --state-version, --recipient and --confirm-execute")
     if a.evidence_route and a.operation != "rework":
         p.error("--evidence-route requires rework")
     if a.rework_attempt and a.operation not in ("start", "recover", "status"):
@@ -58,6 +65,9 @@ def main(argv):
         if (thread / "spec.json").exists() and (thread / "spec.json").read_bytes() != spec.read_bytes():
             p.error("selected spec differs from the frozen run")
         args = ["--thread", str(thread)]
+        if a.handoff:
+            args.extend(["--handoff", a.handoff, "--state-version", a.state_version,
+                         "--recipient", a.recipient])
         if a.rework_attempt:
             args.append("--rework-attempt")
         if a.evidence_route:

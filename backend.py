@@ -45,7 +45,7 @@ def run(action, argv):
     else:
         args = [str(root / "apps/maid/maid.py")]
     cmd = [sys.executable, "-B", *args, *argv]
-    if action == "status" or (action == "maid" and argv[-1:] == ["status"]):
+    if action in ("status", "recover") or (action == "maid" and argv[-1:] == ["status"]):
         from continuity import render
         proc = subprocess.run(cmd, stdout=subprocess.PIPE)
         sys.stdout.buffer.write(proc.stdout)

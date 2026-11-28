@@ -202,3 +202,9 @@ python maid.py shared --index $Index --project research status --task T-A
 ---
 
 - [秘书如何向 Owner 汇报](../SECRETARY.md)
+
+## 中断后查看与接手
+
+在支持交接的后端，先运行 `python maid.py runs --index INDEX --project PROJECT --run RUN recover`；查看返工尝试时加 `--rework-attempt`。这一步只读：查看最后一个有回执的步骤、工作区、当前提交和未提交改动。已发出但无回执，不等于未执行。
+
+如需接手，在同一条命令后追加 `--handoff continue|manual|reassign --state-version 刚查到的版本 --recipient 身份 --confirm-execute`。三种动作分别表示由原执行者继续、人工接手、换执行者，实际运行时只选一个。页面过期需重新查看；不能确认旧执行者已停写时只能查看与核查，不要重派。交接成功不代表交付或审核通过。

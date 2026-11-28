@@ -175,3 +175,9 @@ The command files use the controller's task creation, enqueue and claim formats.
 With AWO v1.1.1, add --directory CATALOG.json --project PROJECT_KEY --material DOCUMENT_KEY to request. The secretary can read the specified published document. Both drafting and task preparation check its revision and permission. Revoking access blocks subsequent reads.
 
 [How the secretary reports to the Owner (Chinese)](../SECRETARY.md)
+
+## Inspect and hand over an interrupted attempt
+
+With a backend supporting handoff, run `python maid.py runs --index INDEX --project PROJECT --run RUN recover` first. Add `--rework-attempt` when inspecting a repair attempt. This read-only report distinguishes the last receipt from a send with unknown effects and shows the worktree, commit, and local changes.
+
+Use the same selection and append `--handoff continue|manual|reassign --state-version OBSERVED_VERSION --recipient ID --confirm-execute` only after inspecting the report. Choose one action: keep the verified executor, take over personally, or assign another executor. A stale view requires a fresh inspection. If the previous writer cannot be isolated, only inspect and reconcile; do not send again. A handoff is not a delivery or a review.
