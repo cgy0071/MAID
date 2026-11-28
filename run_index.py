@@ -18,12 +18,15 @@ def main(argv):
     p.add_argument("--index", type=Path, required=True, help="local project/run index JSON")
     p.add_argument("--project")
     p.add_argument("--run")
-    p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover", "session"))
+    p.add_argument("operation", choices=("list", "prepare", "status", "start", "recover", "session", "rework"))
     p.add_argument("--action", choices=("records", "focus", "resume"))
     p.add_argument("--confirm-execute", action="store_true")
     p.add_argument("--draft", type=Path)
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
+    p.add_argument("--evidence-route", type=Path, help="fresh recipient grants for rework")
     a = p.parse_args(argv)
+    if a.evidence_route and a.operation != "rework":
+        p.error("--evidence-route requires rework")
     if bool(a.action) != (a.operation == "session"):
         p.error("session requires --action records, focus or resume")
     if a.draft is not None or a.draft_digest is not None:
@@ -52,6 +55,8 @@ def main(argv):
         if (thread / "spec.json").exists() and (thread / "spec.json").read_bytes() != spec.read_bytes():
             p.error("selected spec differs from the frozen run")
         args = ["--thread", str(thread)]
+        if a.evidence_route:
+            args.extend(["--evidence-route", str(a.evidence_route.resolve())])
         if a.action:
             args.extend(["--action", a.action])
         if a.operation == "prepare":

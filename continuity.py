@@ -23,6 +23,10 @@ def render(response):
     if c.get("decision"):
         lines.append(c["decision"]["question"])
         lines.extend(f"  {option}: {impact}" for option, impact in c["decision"]["options"])
+    rework = c.get("rework")
+    if isinstance(rework, dict) and rework.get("previous_review") == "repair":
+        lines.append("上次交付/审核：" + str(rework["previous_commit"]) + "，要求返工")
+        lines.append("本次返工：" + labels.get(rework.get("state"), "状态待核实"))
     session = c.get("session")
     if isinstance(session, dict) and session.get("records") is True:
         lines.append("查看记录 / 查看交付和工作区：session --action records")

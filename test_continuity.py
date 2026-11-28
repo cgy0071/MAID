@@ -4,6 +4,13 @@ from continuity import render
 
 
 class Continuity(unittest.TestCase):
+    def test_rework_result_does_not_promote_previous_delivery(self):
+        text = render({"continuity": dict(version=1, state="repair", review="repair",
+                      rework=dict(previous_commit="abc123", previous_review="repair",
+                                  state="accepted", review="accept"))})
+        self.assertIn("上次交付/审核：abc123，要求返工", text)
+        self.assertIn("本次返工：审核通过", text)
+
     def test_only_verified_session_actions_are_offered(self):
         for focus, resume in ((False, False), (True, False), (False, True)):
             text = render({"continuity": dict(version=1, session=dict(records=True, focus=focus, resume=resume))})
