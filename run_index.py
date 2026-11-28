@@ -24,9 +24,12 @@ def main(argv):
     p.add_argument("--draft", type=Path)
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     p.add_argument("--evidence-route", type=Path, help="fresh recipient grants for rework")
+    p.add_argument("--rework-attempt", action="store_true", help="select the linked repair attempt")
     a = p.parse_args(argv)
     if a.evidence_route and a.operation != "rework":
         p.error("--evidence-route requires rework")
+    if a.rework_attempt and a.operation not in ("start", "recover", "status"):
+        p.error("--rework-attempt requires start, recover or status")
     if bool(a.action) != (a.operation == "session"):
         p.error("session requires --action records, focus or resume")
     if a.draft is not None or a.draft_digest is not None:
@@ -55,6 +58,8 @@ def main(argv):
         if (thread / "spec.json").exists() and (thread / "spec.json").read_bytes() != spec.read_bytes():
             p.error("selected spec differs from the frozen run")
         args = ["--thread", str(thread)]
+        if a.rework_attempt:
+            args.append("--rework-attempt")
         if a.evidence_route:
             args.extend(["--evidence-route", str(a.evidence_route.resolve())])
         if a.action:
