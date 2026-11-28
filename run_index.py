@@ -1,6 +1,7 @@
 """Resolve an explicitly named project and run from an operator-owned index."""
 import argparse
 import json
+import os
 from pathlib import Path
 import sys
 
@@ -24,12 +25,25 @@ def main(argv):
     p.add_argument("--handoff", choices=("continue", "manual", "reassign"))
     p.add_argument("--state-version", help="observed version from read-only recover")
     p.add_argument("--recipient", help="executor or operator identity for this handoff")
+    p.add_argument("--lanes", type=Path, default=os.environ.get("MAID_LANES_FILE"), help="local named lanes JSON")
+    p.add_argument("--reassign-lane", help="named executor lane for recover --handoff reassign")
     p.add_argument("--draft", type=Path)
     p.add_argument("--draft-digest", help="SHA-256 shown with the reviewed evidence draft")
     p.add_argument("--evidence-route", type=Path, help="fresh recipient grants for rework")
     p.add_argument("--rework-attempt", action="store_true", help="select the linked repair attempt")
     p.add_argument("--handoff-attempt", action="store_true", help="select the verified replacement attempt")
     a = p.parse_args(argv)
+    if a.reassign_lane is not None:
+        if a.operation != "recover" or a.handoff != "reassign":
+            p.error("--reassign-lane requires recover --handoff reassign")
+        import lanes
+        try:
+            resolved = lanes.resolve_lane(a.lanes, a.reassign_lane, role="executor")
+        except (lanes.LaneError, OSError, ValueError) as exc:
+            p.error(str(exc))
+        if a.recipient and a.recipient != resolved["lane"]:
+            p.error("--recipient must match --reassign-lane")
+        a.recipient = resolved["lane"]
     if any(x is not None for x in (a.handoff, a.state_version, a.recipient)):
         if not (a.operation == "recover" and a.confirm_execute and a.handoff
                 and a.state_version and a.recipient and a.recipient.strip()):
@@ -69,6 +83,8 @@ def main(argv):
         if a.handoff:
             args.extend(["--handoff", a.handoff, "--state-version", a.state_version,
                          "--recipient", a.recipient])
+            if a.reassign_lane:
+                args.extend(["--lanes", str(a.lanes.resolve()), "--reassign-lane", a.reassign_lane])
         if a.rework_attempt:
             args.append("--rework-attempt")
         if a.handoff_attempt:
