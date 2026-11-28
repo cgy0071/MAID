@@ -68,3 +68,13 @@ class Handoff(unittest.TestCase):
         for value in ("换人重派", "replacement", "child", "REV", "本回执只证明交接"):
             self.assertIn(value, text)
         self.assertNotIn("审核通过", text)
+
+    def test_continue_names_original_instance_but_retired_only_offers_history(self):
+        h = dict(instance="executor-72", allowed_actions=["continue"], writer_isolation="not_dispatched")
+        self.assertIn("--recipient executor-72", render({"recovery": {"handoff": h}}))
+        h.update(allowed_actions=[], writer_isolation="retired")
+        card = render({"recovery": {"handoff": h}})
+        self.assertIn("旧身份已退出", card)
+        self.assertIn("原任务历史", card)
+        self.assertNotIn("--recipient", card)
+        self.assertNotIn("未能证实已停写", card)

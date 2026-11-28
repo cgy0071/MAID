@@ -34,12 +34,17 @@ def recovery_card(report):
         if h.get("workspace_available") and isinstance(entries, list):
             changes = "；".join(" ".join(x) if isinstance(x, list) else str(x) for x in entries) or "无"
         lines.append(label + "：" + changes)
-    isolation = {"not_dispatched": "从未派工给旧执行者", "host_fenced": "宿主已确认旧执行者不能再写"}
+    isolation = {"not_dispatched": "从未派工给旧执行者", "host_fenced": "宿主已确认旧执行者不能再写",
+                 "retired": "旧身份已退出此任务，不能再通过 AWO 写入；这不表示系统文件权限已更改"}
     lines.append("旧执行者写权限：" + isolation.get(h.get("writer_isolation"), "未能证实已停写"))
     session = h.get("session") or {}
     lines.append("原会话：" + ("可恢复" if session.get("resume") is True else "未确认可恢复"))
     allowed = [actions[k] for k in h.get("allowed_actions", []) if k in actions]
     lines.append("可选操作：" + ("、".join(allowed) or "仅查看与核查，请勿重派"))
+    if h.get("writer_isolation") == "retired":
+        lines.append("可回看原任务历史；请查交接回执核对已保存的工作区与提交。")
+    if "continue" in h.get("allowed_actions", []) and h.get("instance"):
+        lines.append("原执行者继续时使用：--recipient " + str(h["instance"]))
     lines.append("观察到的状态版本：" + str(h.get("state_version") or "未核实"))
     return "\n".join(lines)
 
