@@ -52,6 +52,36 @@ python maid.py shared --index <索引.json> --project research status --task T-A
 ### 5. 清晰好懂的进度汇报
 秘书向你汇报时，先说“做到哪一步、对项目有什么影响”，把执行者的技术行话翻译成大白话，同时严格保留准确的数据、引文原话、证据编号和未完成事项（详见 [秘书汇报规范](SECRETARY.md)）。
 
+## 日常任务：从找资料到接手
+
+**查看本机工具**: `python -B maid.py doctor --lanes`
+
+扫描本机 CLI；已有通道文件时，用 `python -B maid.py doctor --lanes lanes.json` 核对名称。发现工具不会授予权限。
+
+**先学习，再决定是否派工**: `python -B maid.py study --library library.json --target target.json --draft-out draft.json`
+
+选资料、说明已懂什么和想学什么。输入 `ask 问题` 追问、`open 1` 回看原文、`draft 1` 把原文选段带入草案。不能选 AI 类比，目标任务也必须有读取权限。只想学习时可省略目标和草案参数。
+
+**按主题找依据**: `python -B maid.py request --query "inference latency" --target target.json --out draft.json`
+
+无需文档 ID。看过出处后输入选段编号、`all` 或 `cancel`。输出文件须用新名字；零命中不会创建草案。
+
+**普通任务指定执行通道**: `python -B maid.py request --profile profile.json --thread THREAD --lanes lanes.json --lane codex-default "Review the examples"`
+
+通道名须已配置且可用作执行者。这与上面的主题检索是两种请求，不要把 `--lane` 和 `--query` 拼在一起。
+
+下表每一行都接在同一条命令后面： `python -B maid.py runs --index projects.json --project PROJECT --run RUN`. 把 PROJECT、RUN 换成索引中的项目和运行名。配置文件示例见[学习指南](docs/study.md)。
+
+| 命令参数 | 何时使用 |
+|---|---|
+| `prepare` | 先准备索引中的运行；要带入引用，运行配置须有证据读取授权（`evidence_route`）。 |
+| `start --confirm-execute --draft draft.json --draft-digest SHA256` | 核对选段后，填入刚才看到的 `draft_sha256` 才确认派工。 |
+| `status` | 查看改了什么、查了什么、还剩什么；交付、审核通过、合并分别显示。 |
+| `session --action records` | 先找交付记录和工作区；只有绑定的会话支持时，才将 `records` 换成 `focus` 或 `resume`。 |
+| `rework` | 审核要求返工时，按意见准备关联尝试。用 `status --rework-attempt` 查看，用 `start --rework-attempt --confirm-execute` 派工。 |
+| `recover` | 中断后先查看最后回执、工作区改动和当前允许的接手动作。 |
+| `recover --handoff reassign --state-version VERSION --lanes lanes.json --reassign-lane LANE --confirm-execute` | 使用刚查到的状态版本和可用替代通道。此步只准备接手；先用 `status --handoff-attempt` 核对，再决定是否启动。 |
+
 ## 始终由你掌控的三件事
 
 1. **角色自由搭配**：秘书和干活的执行者各自独立，互不绑定。

@@ -52,6 +52,36 @@ Attach an authorized published document to `request` via `--directory <CATALOG.j
 ### 5. Plain-language reporting
 Your secretary leads with what happened and what it means for your project, translates internal jargon into plain language, and preserves exact numbers, verbatim quotes, evidence IDs, and open items (see [Secretary reporting rules](SECRETARY.md)).
 
+## Everyday tasks: from research to handoff
+
+**Discover local tools**: `python -B maid.py doctor --lanes`
+
+Scan local CLIs. To check the names in an existing file, run `python -B maid.py doctor --lanes lanes.json`. Discovery grants no permissions.
+
+**Study before assigning work**: `python -B maid.py study --library library.json --target target.json --draft-out draft.json`
+
+Choose a source and a learning goal. Use `ask QUESTION` to follow up, `open 1` to revisit the original, and `draft 1` to select it for a task. Only original passages qualify; the target task must have its own grant. Omit the target and draft options to study only.
+
+**Find evidence by topic**: `python -B maid.py request --query "inference latency" --target target.json --out draft.json`
+
+Keep the displayed passage numbers, enter `all`, or `cancel`. No document ID is needed. Use a new output filename; no matches means no draft.
+
+**Choose a worker for an ordinary request**: `python -B maid.py request --profile profile.json --thread THREAD --lanes lanes.json --lane codex-default "Review the examples"`
+
+Use a configured executor lane. This secretary request and the `--query` evidence request above are separate commands; do not combine the flags.
+
+Append each operation below to the same command: `python -B maid.py runs --index projects.json --project PROJECT --run RUN`. Replace PROJECT and RUN with keys from your index. See the [study guide](docs/study.md) for local file formats.
+
+| Operation | When to use it |
+|---|---|
+| `prepare` | Prepare the indexed run first; its spec needs an evidence route for a draft with citations. |
+| `start --confirm-execute --draft draft.json --draft-digest SHA256` | After reviewing the selection, use its displayed `draft_sha256` to confirm dispatch. |
+| `status` | Read changes, checks and remaining issues. Delivery, review and merge are separate outcomes. |
+| `session --action records` | Find the delivery and workspace. Use `focus` or `resume` only when the bound session supports it. |
+| `rework` | After a repair verdict, prepare a linked attempt from the review. Inspect it with `status --rework-attempt`; dispatch with `start --rework-attempt --confirm-execute`. |
+| `recover` | Inspect the last receipt, changes and available handoffs before choosing an action. |
+| `recover --handoff reassign --state-version VERSION --lanes lanes.json --reassign-lane LANE --confirm-execute` | Use the version just displayed and an eligible replacement lane. Inspect the replacement with `status --handoff-attempt` before starting it. |
+
 ## Three things that always stay in your hands
 
 1. **Independent role choices**: pick your secretary separately from the worker that edits code.
